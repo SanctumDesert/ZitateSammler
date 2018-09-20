@@ -585,3 +585,6 @@ This warning can be switched off on the Team > Git > Confirmations and Warnings 
 !ENTRY org.eclipse.core.net 4 0 2018-09-20 08:07:35.328
 !MESSAGE WinHttp.GetProxyForUrl for pac failed with error 'The proxy auto-configuration script could not be downloaded
 ' #12167.
+
+!ENTRY org.eclipse.equinox.p2.metadata.repository 4 1000 2018-09-20 08:55:49.069
+!MESSAGE No repository found at http://download.eclipse.org/windowbuilder/WB/integration/4.4/.
