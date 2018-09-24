@@ -5,12 +5,18 @@ import javax.swing.JButton;
 import java.awt.BorderLayout;
 import javax.swing.JLabel;
 import java.awt.event.ActionListener;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
+
+import javax.xml.bind.DatatypeConverter;;
 
 public class Login {
 
@@ -63,27 +69,42 @@ public class Login {
 				
 				//Get the input username and password
 				String username = txtUser.getText();
-				String password = txtPassword.getText();
-				
-				//Check if user is valid
-				PreparedStatement myStmt;
+
+				//Password is encrypted in the database. We have to encrypt input as well in order to compare
+				MessageDigest digest;
 				try {
-					myStmt = connection.getConnection().prepareStatement("SELECT * FROM tbluser WHERE nutzername=? AND passwort=?");
-					myStmt.setString(1, username);
-					myStmt.setString(2, password);
-					ResultSet myRs = myStmt.executeQuery();
-					System.out.println("test");
-					if(myRs.next()==true) {
-							System.out.println("Login erfolgreich.");
-							User user = new User(myRs.getInt(1), myRs.getString(2), myRs.getString(3));
+					digest = MessageDigest.getInstance("SHA-256");
+					String passwordInput= String.valueOf(txtPassword.getPassword());
+					digest.update(passwordInput.getBytes());
+					byte[] passwordArray = digest.digest();
+					
+					String test = new String(DatatypeConverter.printHexBinary(passwordArray).toLowerCase());
+					
+					//Check if user is valid
+					PreparedStatement myStmt;
+					try {
+						myStmt = connection.getConnection().prepareStatement("SELECT * FROM tbluser WHERE nutzername=? AND passwort=?");
+						myStmt.setString(1, username);
+						myStmt.setString(2, test);
+						ResultSet myRs = myStmt.executeQuery();
+						if(myRs.next()==true) {
+								System.out.println("Login erfolgreich.");
+								User user = new User(myRs.getInt(1), myRs.getString(2), myRs.getString(3), myRs.getString(4), myRs.getString(5), myRs.getInt(6),myRs.getBoolean(7), myRs.getString(8));
+						}
+						else {
+							System.out.println("Nutzerdaten waren falsch.");
+						}
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
-					else {
-						System.out.println("Nutzerdaten waren falsch.");
-					}
-				} catch (SQLException e) {
+					
+				} catch (NoSuchAlgorithmException e1) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					e1.printStackTrace();
 				}
+				
+				
 				
 			}
 		});
