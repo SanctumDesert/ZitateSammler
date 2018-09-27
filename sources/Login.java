@@ -16,11 +16,13 @@ import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 
-import javax.xml.bind.DatatypeConverter;;
+import javax.xml.bind.DatatypeConverter;
+
+import com.sun.glass.ui.Application;;
 
 public class Login {
 
-	private JFrame frame;
+	private JFrame frmLogin;
 	private JTextField txtUser;
 	private JPasswordField txtPassword;
 
@@ -32,7 +34,7 @@ public class Login {
 			public void run() {
 				try {
 					Login window = new Login();
-					window.frame.setVisible(true);
+					window.frmLogin.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -52,14 +54,14 @@ public class Login {
 	 */
 	private void initialize() {
 		
-		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 300);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
+		frmLogin = new JFrame();
+		frmLogin.setBounds(100, 100, 450, 300);
+		frmLogin.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmLogin.getContentPane().setLayout(null);
 		
 		JLabel lbltest = new JLabel("Benutzername:");
 		lbltest.setBounds(63, 39, 113, 14);
-		frame.getContentPane().add(lbltest);
+		frmLogin.getContentPane().add(lbltest);
 		
 		JButton btnLogin = new JButton("Einloggen");
 		btnLogin.addActionListener(new ActionListener() {
@@ -109,28 +111,33 @@ public class Login {
 			}
 		});
 		btnLogin.setBounds(63, 163, 115, 23);
-		frame.getContentPane().add(btnLogin);
+		frmLogin.getContentPane().add(btnLogin);
 		
 		JButton btnAbbrechen = new JButton("Beenden");
+		btnAbbrechen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				frmLogin.dispose();
+			}
+		});
 		btnAbbrechen.setBounds(335, 227, 89, 23);
-		frame.getContentPane().add(btnAbbrechen);
+		frmLogin.getContentPane().add(btnAbbrechen);
 		
 		JButton btnRegiestrieren = new JButton("Regiestrieren");
 		btnRegiestrieren.setBounds(226, 163, 115, 23);
-		frame.getContentPane().add(btnRegiestrieren);
+		frmLogin.getContentPane().add(btnRegiestrieren);
 		
 		JLabel lblPasswort = new JLabel("Passwort: ");
 		lblPasswort.setBounds(63, 81, 89, 14);
-		frame.getContentPane().add(lblPasswort);
+		frmLogin.getContentPane().add(lblPasswort);
 		
 		txtUser = new JTextField();
 		txtUser.setBounds(181, 36, 160, 20);
-		frame.getContentPane().add(txtUser);
+		frmLogin.getContentPane().add(txtUser);
 		txtUser.setColumns(10);
 		
 		txtPassword = new JPasswordField();
 		txtPassword.setBounds(181, 77, 160, 22);
-		frame.getContentPane().add(txtPassword);
+		frmLogin.getContentPane().add(txtPassword);
 		
 		
 	}
