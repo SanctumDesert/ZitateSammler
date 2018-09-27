@@ -116,7 +116,7 @@ public class Login {
 		JButton btnAbbrechen = new JButton("Beenden");
 		btnAbbrechen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				frmLogin.dispose();
+				frmLogin.dispose(); //test
 			}
 		});
 		btnAbbrechen.setBounds(335, 227, 89, 23);
