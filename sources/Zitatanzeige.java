@@ -16,6 +16,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class Zitatanzeige {
 
@@ -56,14 +58,17 @@ public class Zitatanzeige {
 		frmHauptmenue.getContentPane().setLayout(null);
 		
 		JComboBox cbSubject = new JComboBox();
+		cbSubject.setEditable(true);
 		cbSubject.setBounds(20, 68, 98, 20);
 		frmHauptmenue.getContentPane().add(cbSubject);
 		
 		JComboBox cbClass = new JComboBox();
+		cbClass.setEditable(true);
 		cbClass.setBounds(128, 68, 98, 20);
 		frmHauptmenue.getContentPane().add(cbClass);
 		
 		JComboBox cbTeacher = new JComboBox();
+		cbTeacher.setEditable(true);
 		cbTeacher.setBounds(236, 68, 98, 20);
 		frmHauptmenue.getContentPane().add(cbTeacher);
 		
@@ -108,6 +113,14 @@ public class Zitatanzeige {
 		frmHauptmenue.getContentPane().add(btnNichtSchliessen);
 		
 		JButton btnZitateHinzufgen = new JButton("Zitat Hinzuf\u00FCgen");
+		btnZitateHinzufgen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				//frmHauptmenue.setVisible(false);
+				frmHauptmenue.dispose();
+				ZitateHinzufuegen addZitat = new ZitateHinzufuegen();
+				
+			}
+		});
 		btnZitateHinzufgen.setBounds(332, 127, 119, 23);
 		frmHauptmenue.getContentPane().add(btnZitateHinzufgen);
 		
@@ -116,6 +129,7 @@ public class Zitatanzeige {
 		frmHauptmenue.getContentPane().add(btnNewButton);
 		
 		JComboBox cbSpeaker = new JComboBox();
+		cbSpeaker.setEditable(true);
 		cbSpeaker.setBounds(353, 68, 98, 20);
 		frmHauptmenue.getContentPane().add(cbSpeaker);
 		
@@ -135,6 +149,18 @@ public class Zitatanzeige {
 					while(myRs.next()) {
 						cbClass.addItem(myRs.getString("Klasse"));
 					}
+					myRs = myStmt.executeQuery("SELECT Kurs FROM tblkurs");
+					while(myRs.next()) {
+						cbSubject.addItem(myRs.getString("Kurs"));
+					}
+					myRs = myStmt.executeQuery("SELECT DISTINCT Lehrer FROM tblkurs");
+					while(myRs.next()) {
+						cbTeacher.addItem(myRs.getString("Lehrer"));
+					}
+					cbSubject.setSelectedIndex(-1);
+					cbClass.setSelectedIndex(-1);
+					cbTeacher.setSelectedIndex(-1);
+					cbSpeaker.setSelectedIndex(-1);
 				}
 				catch(Exception e){
 					System.out.println(e);
