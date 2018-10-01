@@ -142,7 +142,7 @@ public class Zitatanzeige {
 			@Override
 			public void windowOpened(WindowEvent arg0) {
 				try {
-					Connection connection = DriverManager.getConnection("jdbc:mysql://169.254.207.248:3306/zitatedb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=CET", "Lukas", "root");
+					Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/zitatedb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=CET", "root", "");
 					System.out.println("Connection successfull!");
 					Statement myStmt = connection.createStatement();
 					ResultSet myRs = myStmt.executeQuery("SELECT Klasse FROM tblklassen");
