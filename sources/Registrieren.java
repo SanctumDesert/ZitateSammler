@@ -216,10 +216,6 @@ public class Registrieren {
 					System.out.println("Gültige Sonderzeichen sind €, !, §, $, %, &");
 					validInput=false;
 				}
-				
-				
-				
-				
 			}
 		});
 		btnRegister.setBounds(69, 292, 114, 23);
