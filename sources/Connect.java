@@ -7,7 +7,11 @@ public class Connect {
 	Connection connection;
 	Connect(){
 		try {
-			this.connection = DriverManager.getConnection("jdbc:mysql://169.254.207.248:3306/zitatedb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=CET", "Lukas", "root");
+			
+			//Connection to Localhost
+			this.connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/zitatedb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=CET", "root", "");
+			//Connection to Fabian
+			//this.connection = DriverManager.getConnection("jdbc:mysql://169.254.207.248:3306/zitatedb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=CET", "Lukas", "root");
 			System.out.println("Connection successfull!");
 			/*Statement myStmt = connection.createStatement();
 			ResultSet myRs = myStmt.executeQuery("SELECT * FROM tbluser");
