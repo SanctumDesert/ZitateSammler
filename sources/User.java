@@ -10,7 +10,7 @@ public class User {
 	int klassenID;
 	boolean admin;
 	
-	User(int ID, String vorname, String nachname, String passwort, String mail, int klassenID, boolean admin, String nutzername){
+	User(int ID, String vorname, String nachname, String passwort, String mail, String nutzername, boolean admin, int klassenID){
 		this.ID = ID;
 		this.vorname = vorname;
 		this.nachname = nachname;
