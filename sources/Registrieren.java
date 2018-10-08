@@ -222,6 +222,11 @@ public class Registrieren {
 		frame.getContentPane().add(btnRegister);
 		
 		JButton btnCancel = new JButton("Abbrechen");
+		btnCancel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				frame.dispose();
+			}
+		});
 		btnCancel.setBounds(241, 292, 114, 23);
 		frame.getContentPane().add(btnCancel);
 	}
