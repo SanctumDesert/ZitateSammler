@@ -91,7 +91,7 @@ public class Login {
 						ResultSet myRs = myStmt.executeQuery();
 						if(myRs.next()==true) {
 								System.out.println("Login erfolgreich.");
-								User user = new User(myRs.getInt(1), myRs.getString(2), myRs.getString(3), myRs.getString(4), myRs.getString(5), myRs.getInt(6),myRs.getBoolean(7), myRs.getString(8));
+								User user = new User(myRs.getInt(1), myRs.getString(2), myRs.getString(3), myRs.getString(4), myRs.getString(5), myRs.getString(6),myRs.getBoolean(7), myRs.getInt(8));
 						}
 						else {
 							System.out.println("Nutzerdaten waren falsch.");
