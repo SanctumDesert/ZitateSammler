@@ -2,3 +2,5 @@
 /.recommenders/
 */.metadata/*
 *metadata*
+.metadata/.log
+*.log
