@@ -19,18 +19,19 @@ import java.sql.DriverManager;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class Zitatanzeige {
+public class ZitatAnzeige {
 
 	private JFrame frmHauptmenue;
 
 	/**
 	 * Launch the application.
 	 */
+	/*
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Zitatanzeige window = new Zitatanzeige();
+					ZitatAnzeige window = new ZitatAnzeige();
 					window.frmHauptmenue.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -38,11 +39,12 @@ public class Zitatanzeige {
 			}
 		});
 	}
+	*/
 
 	/**
 	 * Create the application.
 	 */
-	public Zitatanzeige() {
+	public ZitatAnzeige() {
 		initialize();
 	}
 
@@ -56,6 +58,7 @@ public class Zitatanzeige {
 		frmHauptmenue.setBounds(100, 100, 503, 575);
 		frmHauptmenue.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmHauptmenue.getContentPane().setLayout(null);
+		frmHauptmenue.setVisible(true);
 		
 		JComboBox cbSubject = new JComboBox();
 		cbSubject.setEditable(true);
