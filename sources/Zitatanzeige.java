@@ -1,21 +1,12 @@
-import java.awt.EventQueue;
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.sql.DriverManager;
-
 import javax.swing.JFrame;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import java.awt.Component;
-import javax.swing.Box;
 import javax.swing.JButton;
-import javax.swing.JEditorPane;
 import javax.swing.JList;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -54,23 +45,25 @@ public class ZitatAnzeige {
 	private void initialize() {
 		frmHauptmenue = new JFrame();
 		
+		Connect connection = new Connect();
+		
 		frmHauptmenue.setTitle("Hauptmen\u00FC");
 		frmHauptmenue.setBounds(100, 100, 503, 575);
 		frmHauptmenue.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmHauptmenue.getContentPane().setLayout(null);
 		frmHauptmenue.setVisible(true);
 		
-		JComboBox cbSubject = new JComboBox();
+		JComboBox<String> cbSubject = new JComboBox<String>();
 		cbSubject.setEditable(true);
 		cbSubject.setBounds(20, 68, 98, 20);
 		frmHauptmenue.getContentPane().add(cbSubject);
 		
-		JComboBox cbClass = new JComboBox();
+		JComboBox<String> cbClass = new JComboBox<String>();
 		cbClass.setEditable(true);
 		cbClass.setBounds(128, 68, 98, 20);
 		frmHauptmenue.getContentPane().add(cbClass);
 		
-		JComboBox cbTeacher = new JComboBox();
+		JComboBox<String> cbTeacher = new JComboBox<String>();
 		cbTeacher.setEditable(true);
 		cbTeacher.setBounds(236, 68, 98, 20);
 		frmHauptmenue.getContentPane().add(cbTeacher);
@@ -95,6 +88,7 @@ public class ZitatAnzeige {
 		btnZitateAnzeigen.setBounds(20, 127, 119, 23);
 		frmHauptmenue.getContentPane().add(btnZitateAnzeigen);
 		
+		@SuppressWarnings("rawtypes")
 		JList list = new JList();
 		list.setBounds(10, 176, 467, 254);
 		frmHauptmenue.getContentPane().add(list);
@@ -120,6 +114,7 @@ public class ZitatAnzeige {
 			public void actionPerformed(ActionEvent arg0) {
 				//frmHauptmenue.setVisible(false);
 				frmHauptmenue.dispose();
+				@SuppressWarnings("unused")
 				ZitateHinzufuegen addZitat = new ZitateHinzufuegen();
 				
 			}
@@ -131,7 +126,7 @@ public class ZitatAnzeige {
 		btnNewButton.setBounds(183, 441, 105, 23);
 		frmHauptmenue.getContentPane().add(btnNewButton);
 		
-		JComboBox cbSpeaker = new JComboBox();
+		JComboBox<String> cbSpeaker = new JComboBox<String>();
 		cbSpeaker.setEditable(true);
 		cbSpeaker.setBounds(353, 68, 98, 20);
 		frmHauptmenue.getContentPane().add(cbSpeaker);
@@ -145,9 +140,7 @@ public class ZitatAnzeige {
 			@Override
 			public void windowOpened(WindowEvent arg0) {
 				try {
-					Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/zitatedb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=CET", "root", "");
-					System.out.println("Connection successfull!");
-					Statement myStmt = connection.createStatement();
+					Statement myStmt = connection.getConnection().createStatement();
 					ResultSet myRs = myStmt.executeQuery("SELECT Klasse FROM tblklassen");
 					while(myRs.next()) {
 						cbClass.addItem(myRs.getString("Klasse"));

@@ -1,5 +1,3 @@
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -9,8 +7,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
@@ -50,25 +46,32 @@ public class ZitateHinzufuegen {
 	
 		frame = new JFrame();
 		
+		Connect connection = new Connect();
+		
 		frame.setBounds(100, 100, 489, 383);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		frame.setVisible(true);
 		
-		JComboBox cbSubject = new JComboBox();
+		JComboBox<String> cbSubject = new JComboBox<String>();
 		cbSubject.setEditable(true);
 		cbSubject.setBounds(63, 73, 98, 20);
 		frame.getContentPane().add(cbSubject);
 		
-		JComboBox cbClass = new JComboBox();
+		JComboBox<String> cbClass = new JComboBox<String>();
 		cbClass.setEditable(true);
 		cbClass.setBounds(171, 73, 98, 20);
 		frame.getContentPane().add(cbClass);
 		
-		JComboBox cbTeacher = new JComboBox();
+		JComboBox<String> cbTeacher = new JComboBox<String>();
 		cbTeacher.setEditable(true);
 		cbTeacher.setBounds(279, 73, 98, 20);
 		frame.getContentPane().add(cbTeacher);
+		
+		JComboBox<String> cbSpeaker = new JComboBox<String>();
+		cbSpeaker.setEditable(true);
+		cbSpeaker.setBounds(63, 130, 98, 20);
+		frame.getContentPane().add(cbSpeaker);
 		
 		JLabel label = new JLabel("Zitat hinzuf\u00FCgen");
 		label.setBounds(63, 35, 98, 14);
@@ -91,7 +94,10 @@ public class ZitateHinzufuegen {
 			public void actionPerformed(ActionEvent arg0) {
 				
 				// Get all inputs
-				
+				String inputSubject = cbSubject.getSelectedItem().toString();
+				String inputClass = cbClass.getSelectedItem().toString();
+				String inputTeacher = cbTeacher.getSelectedItem().toString();
+				String inputSpeaker = cbSpeaker.getSelectedItem().toString();
 				
 				
 			}
@@ -103,17 +109,13 @@ public class ZitateHinzufuegen {
 		editorPane.setBounds(227, 131, 150, 96);
 		frame.getContentPane().add(editorPane);
 		
-		JComboBox cbSpeaker = new JComboBox();
-		cbSpeaker.setEditable(true);
-		cbSpeaker.setBounds(63, 130, 98, 20);
-		frame.getContentPane().add(cbSpeaker);
-		
 		JLabel label_4 = new JLabel("Sprecher");
 		label_4.setBounds(63, 115, 70, 14);
 		frame.getContentPane().add(label_4);
 		
 		JButton btnAbbrechen = new JButton("Abbrechen");
 		btnAbbrechen.addActionListener(new ActionListener() {
+			@SuppressWarnings("unused")
 			public void actionPerformed(ActionEvent e) {
 				frame.dispose();
 				ZitatAnzeige zitatAnzeige = new ZitatAnzeige();
@@ -127,9 +129,7 @@ public class ZitateHinzufuegen {
 			@Override
 			public void windowActivated(WindowEvent arg0) {
 				try {
-					Connection connection = DriverManager.getConnection("jdbc:mysql://169.254.207.248:3306/zitatedb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=CET", "Lukas", "root");
-					System.out.println("Connection successfull!");
-					Statement myStmt = connection.createStatement();
+					Statement myStmt = connection.getConnection().createStatement();
 					ResultSet myRs = myStmt.executeQuery("SELECT Klasse FROM tblklassen");
 					while(myRs.next()) {
 						cbClass.addItem(myRs.getString("Klasse"));
