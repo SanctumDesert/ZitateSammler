@@ -4,3 +4,5 @@
 *metadata*
 .metadata/.log
 *.log
+*.ini
+*.json
