@@ -123,6 +123,12 @@ public class Login {
 		frmLogin.getContentPane().add(btnAbbrechen);
 		
 		JButton btnRegiestrieren = new JButton("Regiestrieren");
+		btnRegiestrieren.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				frmLogin.dispose();
+				Registrieren registration = new Registrieren();
+			}
+		});
 		btnRegiestrieren.setBounds(226, 163, 115, 23);
 		frmLogin.getContentPane().add(btnRegiestrieren);
 		
