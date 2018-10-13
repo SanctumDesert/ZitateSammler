@@ -230,6 +230,7 @@ public class Registrieren {
 				MessageDigest digest;
 				PreparedStatement myStmt;
 				try {
+					
 					//Password has to be encrypted in the database.
 					digest = MessageDigest.getInstance("SHA-256");
 					String passwordInput= String.valueOf(txtPassword.getPassword());
