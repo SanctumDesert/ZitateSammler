@@ -87,6 +87,15 @@ public class ZitateHinzufuegen {
 		frame.getContentPane().add(label_3);
 		
 		JButton button = new JButton("Zitate hinzuf\u00FCgen");
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				// Get all inputs
+				
+				
+				
+			}
+		});
 		button.setBounds(63, 290, 117, 23);
 		frame.getContentPane().add(button);
 		
@@ -107,6 +116,7 @@ public class ZitateHinzufuegen {
 		btnAbbrechen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				frame.dispose();
+				ZitatAnzeige zitatAnzeige = new ZitatAnzeige();
 				
 			}
 		});
