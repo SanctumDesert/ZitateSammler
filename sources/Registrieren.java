@@ -3,13 +3,10 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
-import javax.xml.bind.DatatypeConverter;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -121,7 +118,6 @@ public class Registrieren {
 		btnRegister.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
-				boolean validMail = false;
 				boolean validInput = true;
 				//Check if all fields are set.
 				if(txtUsername.getText()==null) {
@@ -137,6 +133,9 @@ public class Registrieren {
 						if(myRs.next()) {
 							System.out.println("Dieser Nutzername ist bereits vergeben.");
 							validInput = false;
+						}
+						else {
+							System.out.println("Dieser Nutzername ist frei.");
 						}
 					} catch (SQLException e) {
 						// TODO Auto-generated catch block
@@ -179,15 +178,12 @@ public class Registrieren {
 					validInput = false;
 				}
 				if(!Arrays.equals(txtPassword.getPassword(),txtPasswordRepeat.getPassword())) {
-					System.out.println("Die Passwörter stimmen nicht überein.");
+					System.out.println("Die PasswÃ¶rter stimmen nicht Ã¼berein.");
 					validInput = false;
 				}
 				if(txtPassword.getPassword().length<6) {
 					System.out.println("Das Passwort muss mindestens 6 Zeichen lang sein.");
 					validInput = false;
-				}
-				if(txtMail.getText().matches("[a-z0-9][-a-z0-9_+.]*[a-z0-9]@[a-z0-9][-a-z0-9.]*[a-z0-9][.](com|de)")) {
-					validMail = true;
 				}
 				boolean uppercase=false;
 				boolean lowercase=false;
@@ -200,7 +196,7 @@ public class Registrieren {
 					if(password[i]>='a' && password[i]<='z') {
 						lowercase=true;
 					}
-					if(password[i]=='€' || password[i]=='!' || password[i]=='§' || password[i]=='$' || password[i]=='%' || password[i]=='&') {
+					if(password[i]=='â‚¬' || password[i]=='!' || password[i]=='Â§' || password[i]=='$' || password[i]=='%' || password[i]=='&') {
 						special=true;
 					}
 					if(uppercase==true && lowercase==true && special == true) {
@@ -212,12 +208,12 @@ public class Registrieren {
 					validInput = false;
 				}
 				if(lowercase==false) {
-					System.out.println("Das passwort muss mindestens einen Großbuchstaben enthalten.");
+					System.out.println("Das passwort muss mindestens einen GroÃŸbuchstaben enthalten.");
 					validInput=false;
 				}
 				if(special==false) {
-					System.out.println("Das Passowrt muss mindestens ein gültiges Sonderzeichen enthalten.");
-					System.out.println("Gültige Sonderzeichen sind €, !, §, $, %, &");
+					System.out.println("Das Passowrt muss mindestens ein gÃ¼ltiges Sonderzeichen enthalten.");
+					System.out.println("GÃ¼ltige Sonderzeichen sind â‚¬, !, Â§, $, %, &");
 					validInput=false;
 				}
 				if(validMail==false) {
@@ -260,11 +256,6 @@ public class Registrieren {
 		frame.getContentPane().add(btnRegister);
 		
 		JButton btnCancel = new JButton("Abbrechen");
-		btnCancel.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				frame.dispose();
-			}
-		});
 		btnCancel.setBounds(241, 292, 114, 23);
 		frame.getContentPane().add(btnCancel);
 	}
