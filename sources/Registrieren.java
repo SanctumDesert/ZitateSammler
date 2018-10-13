@@ -192,7 +192,6 @@ public class Registrieren {
 				boolean uppercase=false;
 				boolean lowercase=false;
 				boolean special=false;
-				boolean validMail=false;
 				char[] password = txtPassword.getPassword();
 				for(int i=0; i < password.length; i++) {
 					if(password[i]>='A' && password[i]<='Z') {
