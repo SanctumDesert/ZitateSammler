@@ -3,10 +3,13 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
+import javax.xml.bind.DatatypeConverter;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -188,6 +191,7 @@ public class Registrieren {
 				boolean uppercase=false;
 				boolean lowercase=false;
 				boolean special=false;
+				boolean validMail=false;
 				char[] password = txtPassword.getPassword();
 				for(int i=0; i < password.length; i++) {
 					if(password[i]>='A' && password[i]<='Z') {
