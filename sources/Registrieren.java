@@ -196,7 +196,7 @@ public class Registrieren {
 					if(password[i]>='a' && password[i]<='z') {
 						lowercase=true;
 					}
-					if(password[i]=='€' || password[i]=='!' || password[i]=='§' || password[i]=='$' || password[i]=='%' || password[i]=='&') {
+					if(password[i]=='!' || password[i]=='$' || password[i]=='%' || password[i]=='&') {
 						special=true;
 					}
 					if(uppercase==true && lowercase==true && special == true) {
