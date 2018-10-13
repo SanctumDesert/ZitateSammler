@@ -178,7 +178,7 @@ public class Registrieren {
 					validInput = false;
 				}
 				if(!Arrays.equals(txtPassword.getPassword(),txtPasswordRepeat.getPassword())) {
-					System.out.println("Die Passwörter stimmen nicht überein.");
+					System.out.println("Die PasswÃ¶rter stimmen nicht Ã¼berein.");
 					validInput = false;
 				}
 				if(txtPassword.getPassword().length<6) {
@@ -196,7 +196,7 @@ public class Registrieren {
 					if(password[i]>='a' && password[i]<='z') {
 						lowercase=true;
 					}
-					if(password[i]=='€' || password[i]=='!' || password[i]=='§' || password[i]=='$' || password[i]=='%' || password[i]=='&') {
+					if(password[i]=='â‚¬' || password[i]=='!' || password[i]=='Â§' || password[i]=='$' || password[i]=='%' || password[i]=='&') {
 						special=true;
 					}
 					if(uppercase==true && lowercase==true && special == true) {
@@ -208,13 +208,47 @@ public class Registrieren {
 					validInput = false;
 				}
 				if(lowercase==false) {
-					System.out.println("Das passwort muss mindestens einen Großbuchstaben enthalten.");
+					System.out.println("Das passwort muss mindestens einen GroÃŸbuchstaben enthalten.");
 					validInput=false;
 				}
 				if(special==false) {
-					System.out.println("Das Passowrt muss mindestens ein gültiges Sonderzeichen enthalten.");
-					System.out.println("Gültige Sonderzeichen sind €, !, §, $, %, &");
+					System.out.println("Das Passowrt muss mindestens ein gÃ¼ltiges Sonderzeichen enthalten.");
+					System.out.println("GÃ¼ltige Sonderzeichen sind â‚¬, !, Â§, $, %, &");
 					validInput=false;
+				}
+				if(validMail==false) {
+					System.out.println("Die angegeben Mailadresse folgt nicht dem validen Mailpattern.");
+					System.out.println("Beispiel: xxx.yyy@zzz.com");
+					validInput=false;
+				}
+				
+				
+				MessageDigest digest;
+				PreparedStatement myStmt;
+				try {
+					
+					//Password has to be encrypted in the database.
+					digest = MessageDigest.getInstance("SHA-256");
+					String passwordInput= String.valueOf(txtPassword.getPassword());
+					digest.update(passwordInput.getBytes());
+					byte[] passwordArray = digest.digest();
+					String passwordStr = new String(DatatypeConverter.printHexBinary(passwordArray).toLowerCase());
+					
+					myStmt = conn.getConnection().prepareStatement("INSERT INTO tblUser (nutzername, vorname, nachname, passwort, mail, admin, klasseid)" +
+																   "VALUES(?, ?, ?, ?, ?, ?, ?)");
+					myStmt.setString(1, txtUsername.getText());
+					myStmt.setString(2, txtFirstName.getText());
+					myStmt.setString(3, txtLastName.getText());
+					myStmt.setString(4, passwordStr);
+					myStmt.setString(5, txtMail.getText());
+					myStmt.setBoolean(6, false);
+					myStmt.setInt(7, 1);
+					
+					myStmt.executeUpdate();
+				}
+				catch (SQLException | NoSuchAlgorithmException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 				}
 			}
 		});
