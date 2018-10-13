@@ -237,15 +237,14 @@ public class Registrieren {
 					byte[] passwordArray = digest.digest();
 					String passwordStr = new String(DatatypeConverter.printHexBinary(passwordArray).toLowerCase());
 					
-					myStmt = conn.getConnection().prepareStatement("INSERT INTO tblUser (nutzername, vorname, nachname, passwort, mail, admin, klasseid)" +
-																   "VALUES(?, ?, ?, ?, ?, ?, ?)");
+					myStmt = conn.getConnection().prepareStatement("INSERT INTO tblUser (nutzername, vorname, nachname, passwort, mail, admin)" +
+																   "VALUES(?, ?, ?, ?, ?, ?)");
 					myStmt.setString(1, txtUsername.getText());
 					myStmt.setString(2, txtFirstName.getText());
 					myStmt.setString(3, txtLastName.getText());
 					myStmt.setString(4, passwordStr);
 					myStmt.setString(5, txtMail.getText());
 					myStmt.setBoolean(6, false);
-					myStmt.setInt(7, 1);
 					
 					myStmt.executeUpdate();
 				}
