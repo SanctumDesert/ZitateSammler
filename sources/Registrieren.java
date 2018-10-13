@@ -3,10 +3,13 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
+import javax.xml.bind.DatatypeConverter;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -118,6 +121,7 @@ public class Registrieren {
 		btnRegister.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
+				boolean validMail = false;
 				boolean validInput = true;
 				//Check if all fields are set.
 				if(txtUsername.getText()==null) {
@@ -133,9 +137,6 @@ public class Registrieren {
 						if(myRs.next()) {
 							System.out.println("Dieser Nutzername ist bereits vergeben.");
 							validInput = false;
-						}
-						else {
-							System.out.println("Dieser Nutzername ist frei.");
 						}
 					} catch (SQLException e) {
 						// TODO Auto-generated catch block
@@ -185,6 +186,9 @@ public class Registrieren {
 					System.out.println("Das Passwort muss mindestens 6 Zeichen lang sein.");
 					validInput = false;
 				}
+				if(txtMail.getText().matches("[a-z0-9][-a-z0-9_+.]*[a-z0-9]@[a-z0-9][-a-z0-9.]*[a-z0-9][.](com|de)")) {
+					validMail = true;
+				}
 				boolean uppercase=false;
 				boolean lowercase=false;
 				boolean special=false;
@@ -216,12 +220,50 @@ public class Registrieren {
 					System.out.println("Gültige Sonderzeichen sind €, !, §, $, %, &");
 					validInput=false;
 				}
+				if(validMail==false) {
+					System.out.println("Die angegeben Mailadresse folgt nicht dem validen Mailpattern.");
+					System.out.println("Beispiel: xxx.yyy@zzz.com");
+					validInput=false;
+				}
+				
+				
+				MessageDigest digest;
+				PreparedStatement myStmt;
+				try {
+					//Password has to be encrypted in the database.
+					digest = MessageDigest.getInstance("SHA-256");
+					String passwordInput= String.valueOf(txtPassword.getPassword());
+					digest.update(passwordInput.getBytes());
+					byte[] passwordArray = digest.digest();
+					String passwordStr = new String(DatatypeConverter.printHexBinary(passwordArray).toLowerCase());
+					
+					myStmt = conn.getConnection().prepareStatement("INSERT INTO tblUser (nutzername, vorname, nachname, passwort, mail, admin, klasseid)" +
+																   "VALUES(?, ?, ?, ?, ?, ?, ?)");
+					myStmt.setString(1, txtUsername.getText());
+					myStmt.setString(2, txtFirstName.getText());
+					myStmt.setString(3, txtLastName.getText());
+					myStmt.setString(4, passwordStr);
+					myStmt.setString(5, txtMail.getText());
+					myStmt.setBoolean(6, false);
+					myStmt.setInt(7, 1);
+					
+					myStmt.executeUpdate();
+				}
+				catch (SQLException | NoSuchAlgorithmException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				}
 			}
 		});
 		btnRegister.setBounds(69, 292, 114, 23);
 		frame.getContentPane().add(btnRegister);
 		
 		JButton btnCancel = new JButton("Abbrechen");
+		btnCancel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				frame.dispose();
+			}
+		});
 		btnCancel.setBounds(241, 292, 114, 23);
 		frame.getContentPane().add(btnCancel);
 	}

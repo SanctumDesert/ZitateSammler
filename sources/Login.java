@@ -80,14 +80,14 @@ public class Login {
 					digest.update(passwordInput.getBytes());
 					byte[] passwordArray = digest.digest();
 					
-					String test = new String(DatatypeConverter.printHexBinary(passwordArray).toLowerCase());
+					String passwordStr = new String(DatatypeConverter.printHexBinary(passwordArray).toLowerCase());
 					
 					//Check if user is valid
 					PreparedStatement myStmt;
 					try {
 						myStmt = connection.getConnection().prepareStatement("SELECT * FROM tbluser WHERE nutzername=? AND passwort=?");
 						myStmt.setString(1, username);
-						myStmt.setString(2, test);
+						myStmt.setString(2, passwordStr);
 						ResultSet myRs = myStmt.executeQuery();
 						if(myRs.next()==true) {
 								System.out.println("Login erfolgreich.");
