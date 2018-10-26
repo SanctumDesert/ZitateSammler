@@ -35,14 +35,14 @@ public class ZitatAnzeige {
 	/**
 	 * Create the application.
 	 */
-	public ZitatAnzeige() {
-		initialize();
+	public ZitatAnzeige(User user) {
+		initialize(user);
 	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {
+	private void initialize(User user) {
 		frmHauptmenue = new JFrame();
 		
 		Connect connection = new Connect();
@@ -115,7 +115,7 @@ public class ZitatAnzeige {
 				//frmHauptmenue.setVisible(false);
 				frmHauptmenue.dispose();
 				@SuppressWarnings("unused")
-				ZitateHinzufuegen addZitat = new ZitateHinzufuegen();
+				ZitateHinzufuegen addZitat = new ZitateHinzufuegen(user);
 				
 			}
 		});
