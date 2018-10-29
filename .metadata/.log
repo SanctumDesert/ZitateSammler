@@ -112,3 +112,6 @@ This warning can be switched off on the Team > Git > Confirmations and Warnings 
 
 !ENTRY org.eclipse.equinox.p2.metadata.repository 4 1000 2018-10-13 15:35:18.652
 !MESSAGE No repository found at http://download.eclipse.org/windowbuilder/WB/integration/4.4/.
+
+!ENTRY org.eclipse.equinox.p2.metadata.repository 4 1000 2018-10-29 18:17:30.735
+!MESSAGE No repository found at http://download.eclipse.org/windowbuilder/WB/integration/4.4/.
