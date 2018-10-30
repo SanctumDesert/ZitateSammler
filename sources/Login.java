@@ -58,6 +58,7 @@ public class Login {
 		frmLogin.setBounds(100, 100, 450, 300);
 		frmLogin.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmLogin.getContentPane().setLayout(null);
+		frmLogin.setVisible(true);
 		
 		JLabel lbltest = new JLabel("Benutzername:");
 		lbltest.setBounds(63, 39, 113, 14);
@@ -91,7 +92,12 @@ public class Login {
 						ResultSet myRs = myStmt.executeQuery();
 						if(myRs.next()==true) {
 								System.out.println("Login erfolgreich.");
-								User user = new User(myRs.getInt(1), myRs.getString(2), myRs.getString(3), myRs.getString(4), myRs.getString(5), myRs.getString(6),myRs.getBoolean(7), myRs.getInt(8));
+								// Creates new user object
+								User user = new User(myRs.getInt(1), myRs.getString(2), myRs.getString(3), myRs.getString(4), myRs.getString(5), myRs.getString(6),myRs.getBoolean(7));
+								// Opens the main window
+								ZitatAnzeige zitateAnzeigen = new ZitatAnzeige(user);
+								// Closes the login frame
+								frmLogin.dispose();
 						}
 						else {
 							System.out.println("Nutzerdaten waren falsch.");

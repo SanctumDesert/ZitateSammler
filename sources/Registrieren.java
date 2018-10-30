@@ -246,7 +246,12 @@ public class Registrieren {
 					myStmt.setString(5, txtMail.getText());
 					myStmt.setBoolean(6, false);
 					
-					myStmt.executeUpdate();
+					if(validInput==true) {
+						myStmt.executeUpdate();
+						System.out.println("User hinzugefügt");
+						frame.dispose();
+						Login login = new Login();
+					}
 				}
 				catch (SQLException | NoSuchAlgorithmException e) {
 				// TODO Auto-generated catch block

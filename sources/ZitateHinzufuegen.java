@@ -1,17 +1,21 @@
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.xml.bind.DatatypeConverter;
+
+import com.sun.imageio.spi.InputStreamImageInputStreamSpi;
+
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.sql.Connection;
-import java.sql.DriverManager;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 public class ZitateHinzufuegen {
@@ -37,38 +41,49 @@ public class ZitateHinzufuegen {
 	/**
 	 * Create the application.
 	 */
-	public ZitateHinzufuegen() {
+	public ZitateHinzufuegen(User user) {
 		//ZitateHinzufuegen window = new ZitateHinzufuegen();
 		
-		initialize();
+		initialize(user);
 	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {
+	private void initialize(User user) {
 	
 		frame = new JFrame();
+		
+		Connect connection = new Connect();
 		
 		frame.setBounds(100, 100, 489, 383);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		frame.setVisible(true);
 		
-		JComboBox cbSubject = new JComboBox();
+		JComboBox<String> cbSubject = new JComboBox<String>();
 		cbSubject.setEditable(true);
 		cbSubject.setBounds(63, 73, 98, 20);
 		frame.getContentPane().add(cbSubject);
 		
-		JComboBox cbClass = new JComboBox();
+		JComboBox<String> cbClass = new JComboBox<String>();
 		cbClass.setEditable(true);
 		cbClass.setBounds(171, 73, 98, 20);
 		frame.getContentPane().add(cbClass);
 		
-		JComboBox cbTeacher = new JComboBox();
+		JComboBox<String> cbTeacher = new JComboBox<String>();
 		cbTeacher.setEditable(true);
 		cbTeacher.setBounds(279, 73, 98, 20);
 		frame.getContentPane().add(cbTeacher);
+		
+		JComboBox<String> cbSpeaker = new JComboBox<String>();
+		cbSpeaker.setEditable(true);
+		cbSpeaker.setBounds(63, 130, 98, 20);
+		frame.getContentPane().add(cbSpeaker);
+		
+		JEditorPane txtInputQuote = new JEditorPane();
+		txtInputQuote.setBounds(227, 131, 150, 96);
+		frame.getContentPane().add(txtInputQuote);
 		
 		JLabel label = new JLabel("Zitat hinzuf\u00FCgen");
 		label.setBounds(63, 35, 98, 14);
@@ -87,17 +102,74 @@ public class ZitateHinzufuegen {
 		frame.getContentPane().add(label_3);
 		
 		JButton button = new JButton("Zitate hinzuf\u00FCgen");
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				// Get all inputs
+				String inputSubject="";
+				if(cbSubject.getSelectedItem()!=null) inputSubject = cbSubject.getSelectedItem().toString();
+				
+				String inputClass="";
+				if(cbClass.getSelectedItem()!=null) inputClass = cbClass.getSelectedItem().toString();
+				
+				String inputTeacher="";
+				if(cbTeacher.getSelectedItem()!=null) inputTeacher = cbTeacher.getSelectedItem().toString();
+				
+				String inputSpeaker="";
+				if(cbSpeaker.getSelectedItem()!=null) inputSpeaker = cbSpeaker.getSelectedItem().toString();
+				
+				String inputQuote="";
+				if(txtInputQuote.getText()!=null) inputQuote = txtInputQuote.getText();
+				
+				PreparedStatement myStmt;
+				try {
+	
+					myStmt = connection.getConnection().prepareStatement("SELECT id FROM tblUser WHERE nutzername = ?");
+					myStmt.setString(1, inputSpeaker);
+					ResultSet result = myStmt.executeQuery();
+					int speakerID = -1;
+					if(result.next()) speakerID = result.getInt(1);
+					
+					myStmt = connection.getConnection().prepareStatement("SELECT id FROM tblKurs WHERE kurs = ? AND lehrer = ?");
+					myStmt.setString(1, inputSubject);
+					myStmt.setString(2, inputTeacher);
+					result = myStmt.executeQuery();
+					int subjectID = -1;
+					if(result.next()) subjectID = result.getInt(1);
+					
+					myStmt = connection.getConnection().prepareStatement("SELECT id FROM tblKlassen WHERE klasse = ?");
+					myStmt.setString(1, inputClass);
+					result = myStmt.executeQuery();
+					int classID = -1;
+					if(result.next()) classID = result.getInt(1);
+					
+					myStmt = connection.getConnection().prepareStatement("SELECT id FROM tblLehrer WHERE name = ?");
+					myStmt.setString(1, inputTeacher);
+					result = myStmt.executeQuery();
+					int teacherID = -1;
+					if(result.next()) teacherID = result.getInt(1);
+					
+					
+					myStmt = connection.getConnection().prepareStatement("INSERT INTO tblZitate (urheberid, sprecherid, kursid, datum, zitat, klasseid, lehrerid)" +
+																  		 "VALUES(?, ?, ?, ?, ?, ?, ?)");
+					myStmt.setInt(1, user.ID);
+					myStmt.setInt(2, speakerID);
+					myStmt.setInt(3, subjectID);
+					myStmt.setLong(4, System.currentTimeMillis());
+					myStmt.setString(5, inputQuote);
+					myStmt.setInt(6, classID);
+					myStmt.setInt(7, teacherID);
+					
+					myStmt.executeUpdate();
+				}
+				catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
 		button.setBounds(63, 290, 117, 23);
 		frame.getContentPane().add(button);
-		
-		JEditorPane editorPane = new JEditorPane();
-		editorPane.setBounds(227, 131, 150, 96);
-		frame.getContentPane().add(editorPane);
-		
-		JComboBox cbSpeaker = new JComboBox();
-		cbSpeaker.setEditable(true);
-		cbSpeaker.setBounds(63, 130, 98, 20);
-		frame.getContentPane().add(cbSpeaker);
 		
 		JLabel label_4 = new JLabel("Sprecher");
 		label_4.setBounds(63, 115, 70, 14);
@@ -105,8 +177,10 @@ public class ZitateHinzufuegen {
 		
 		JButton btnAbbrechen = new JButton("Abbrechen");
 		btnAbbrechen.addActionListener(new ActionListener() {
+			@SuppressWarnings("unused")
 			public void actionPerformed(ActionEvent e) {
 				frame.dispose();
+				ZitatAnzeige zitatAnzeige = new ZitatAnzeige(user);
 				
 			}
 		});
@@ -117,9 +191,7 @@ public class ZitateHinzufuegen {
 			@Override
 			public void windowActivated(WindowEvent arg0) {
 				try {
-					Connection connection = DriverManager.getConnection("jdbc:mysql://169.254.207.248:3306/zitatedb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=CET", "Lukas", "root");
-					System.out.println("Connection successfull!");
-					Statement myStmt = connection.createStatement();
+					Statement myStmt = connection.getConnection().createStatement();
 					ResultSet myRs = myStmt.executeQuery("SELECT Klasse FROM tblklassen");
 					while(myRs.next()) {
 						cbClass.addItem(myRs.getString("Klasse"));
@@ -131,6 +203,10 @@ public class ZitateHinzufuegen {
 					myRs = myStmt.executeQuery("SELECT DISTINCT Lehrer FROM tblkurs");
 					while(myRs.next()) {
 						cbTeacher.addItem(myRs.getString("Lehrer"));
+					}
+					myRs = myStmt.executeQuery("SELECT DISTINCT nutzername FROM tbluser");
+					while(myRs.next()) {
+						cbSpeaker.addItem(myRs.getString("nutzername"));
 					}
 					cbSubject.setSelectedIndex(-1);
 					cbClass.setSelectedIndex(-1);
