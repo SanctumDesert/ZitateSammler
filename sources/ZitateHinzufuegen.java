@@ -149,18 +149,41 @@ public class ZitateHinzufuegen {
 					int teacherID = -1;
 					if(result.next()) teacherID = result.getInt(1);
 					
-					
-					myStmt = connection.getConnection().prepareStatement("INSERT INTO tblZitate (urheberid, sprecherid, kursid, datum, zitat, klasseid, lehrerid)" +
-																  		 "VALUES(?, ?, ?, ?, ?, ?, ?)");
-					myStmt.setInt(1, user.ID);
-					myStmt.setInt(2, speakerID);
-					myStmt.setInt(3, subjectID);
-					myStmt.setLong(4, System.currentTimeMillis());
-					myStmt.setString(5, inputQuote);
-					myStmt.setInt(6, classID);
-					myStmt.setInt(7, teacherID);
-					
-					myStmt.executeUpdate();
+					System.out.println("SpeakerID: " + speakerID + " SubjectID: " + subjectID + " ClassID: " + classID + " TeacherID: " + teacherID + " Quote: " + inputQuote);
+					if(speakerID == -1 || subjectID == -1 || classID == -1 || teacherID == -1 || inputQuote.equals("")) {
+						// --- FIX ME --- Add Error message to logfield
+							System.out.println("Bitte füllen Sie alle Felder aus.");
+					}
+					else {
+						boolean userInClass = false;
+						myStmt = connection.getConnection().prepareStatement("SELECT id FROM user_kurs_map WHERE kursid = ? AND userid = ?");
+						
+						myStmt.setInt(1, subjectID);
+						myStmt.setInt(2, user.ID);
+						result = myStmt.executeQuery();
+						
+						if(result.next()) userInClass = true;
+						
+						if(userInClass) {
+							myStmt = connection.getConnection().prepareStatement("INSERT INTO tblZitate (urheberid, sprecherid, kursid, datum, zitat, klasseid, lehrerid)" +
+																		  		 "VALUES(?, ?, ?, ?, ?, ?, ?)");
+							myStmt.setInt(1, user.ID);
+							myStmt.setInt(2, speakerID);
+							myStmt.setInt(3, subjectID);
+							myStmt.setLong(4, System.currentTimeMillis());
+							myStmt.setString(5, inputQuote);
+							myStmt.setInt(6, classID);
+							myStmt.setInt(7, teacherID);
+							
+							myStmt.executeUpdate();
+							// --- FIX ME --- Add message to logfield
+							System.out.println("Zitat erfolgreich hinzugefügt.");
+						}
+						else {
+							// --- FIX ME--- Add message to logfield
+							System.out.println("Sie sind nicht in diesem Kurs.");
+						}
+					}
 				}
 				catch (SQLException e) {
 					// TODO Auto-generated catch block
