@@ -124,6 +124,7 @@ public class ZitateHinzufuegen {
 				PreparedStatement myStmt;
 				try {
 	
+					
 					myStmt = connection.getConnection().prepareStatement("SELECT id FROM tblUser WHERE nutzername = ?");
 					myStmt.setString(1, inputSpeaker);
 					ResultSet result = myStmt.executeQuery();
