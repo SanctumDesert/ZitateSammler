@@ -165,15 +165,16 @@ public class ZitateHinzufuegen {
 						if(result.next()) userInClass = true;
 						
 						if(userInClass) {
-							myStmt = connection.getConnection().prepareStatement("INSERT INTO tblZitate (urheberid, sprecherid, kursid, datum, zitat, klasseid, lehrerid)" +
-																		  		 "VALUES(?, ?, ?, ?, ?, ?, ?)");
-							myStmt.setInt(1, user.ID);
-							myStmt.setInt(2, speakerID);
-							myStmt.setInt(3, subjectID);
-							myStmt.setLong(4, System.currentTimeMillis());
-							myStmt.setString(5, inputQuote);
-							myStmt.setInt(6, classID);
-							myStmt.setInt(7, teacherID);
+							myStmt = connection.getConnection().prepareStatement("INSERT INTO tblZitate (deleted, urheberid, sprecherid, kursid, datum, zitat, klasseid, lehrerid)" +
+																		  		 "VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
+							myStmt.setInt(1, 0);
+							myStmt.setInt(2, user.ID);
+							myStmt.setInt(3, speakerID);
+							myStmt.setInt(4, subjectID);
+							myStmt.setLong(5, System.currentTimeMillis());
+							myStmt.setString(6, inputQuote);
+							myStmt.setInt(7, classID);
+							myStmt.setInt(8, teacherID);
 							
 							myStmt.executeUpdate();
 							// --- FIX ME --- Add message to logfield
