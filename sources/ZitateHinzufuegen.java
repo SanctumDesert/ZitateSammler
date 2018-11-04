@@ -17,6 +17,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import javax.swing.JTextArea;
+import java.awt.SystemColor;
+import java.awt.Font;
+import java.awt.Color;
 
 public class ZitateHinzufuegen {
 
@@ -56,7 +60,7 @@ public class ZitateHinzufuegen {
 		
 		Connect connection = new Connect();
 		
-		frame.setBounds(100, 100, 489, 383);
+		frame.setBounds(100, 100, 597, 453);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		frame.setVisible(true);
@@ -78,11 +82,11 @@ public class ZitateHinzufuegen {
 		
 		JComboBox<String> cbSpeaker = new JComboBox<String>();
 		cbSpeaker.setEditable(true);
-		cbSpeaker.setBounds(63, 130, 98, 20);
+		cbSpeaker.setBounds(389, 73, 98, 20);
 		frame.getContentPane().add(cbSpeaker);
 		
 		JEditorPane txtInputQuote = new JEditorPane();
-		txtInputQuote.setBounds(227, 131, 150, 96);
+		txtInputQuote.setBounds(63, 106, 424, 96);
 		frame.getContentPane().add(txtInputQuote);
 		
 		JLabel label = new JLabel("Zitat hinzuf\u00FCgen");
@@ -101,9 +105,19 @@ public class ZitateHinzufuegen {
 		label_3.setBounds(279, 58, 70, 14);
 		frame.getContentPane().add(label_3);
 		
+		JTextArea txtErrorMessages = new JTextArea();
+		txtErrorMessages.setForeground(new Color(255, 0, 0));
+		txtErrorMessages.setFont(new Font("Monospaced", Font.PLAIN, 12));
+		txtErrorMessages.setEditable(false);
+		txtErrorMessages.setBackground(SystemColor.menu);
+		txtErrorMessages.setBounds(63, 233, 424, 96);
+		frame.getContentPane().add(txtErrorMessages);
+		
 		JButton button = new JButton("Zitate hinzuf\u00FCgen");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				txtErrorMessages.setText("");
+				StringBuilder builder = new StringBuilder();
 				
 				// Get all inputs
 				String inputSubject="";
@@ -152,7 +166,7 @@ public class ZitateHinzufuegen {
 					System.out.println("SpeakerID: " + speakerID + " SubjectID: " + subjectID + " ClassID: " + classID + " TeacherID: " + teacherID + " Quote: " + inputQuote);
 					if(speakerID == -1 || subjectID == -1 || classID == -1 || teacherID == -1 || inputQuote.equals("")) {
 						// --- FIX ME --- Add Error message to logfield
-							System.out.println("Bitte füllen Sie alle Felder aus.");
+							builder.append("Bitte füllen Sie alle Felder aus.");
 					}
 					else {
 						boolean userInClass = false;
@@ -176,12 +190,10 @@ public class ZitateHinzufuegen {
 							myStmt.setInt(7, teacherID);
 							
 							myStmt.executeUpdate();
-							// --- FIX ME --- Add message to logfield
-							System.out.println("Zitat erfolgreich hinzugefügt.");
+							builder.append("Zitat erfolgreich hinzugefügt.");
 						}
 						else {
-							// --- FIX ME--- Add message to logfield
-							System.out.println("Sie sind nicht in diesem Kurs.");
+							builder.append("Sie sind nicht in diesem Kurs.");
 						}
 					}
 				}
@@ -189,13 +201,14 @@ public class ZitateHinzufuegen {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				txtErrorMessages.setText(builder.toString());
 			}
 		});
-		button.setBounds(63, 290, 117, 23);
+		button.setBounds(85, 349, 156, 23);
 		frame.getContentPane().add(button);
 		
 		JLabel label_4 = new JLabel("Sprecher");
-		label_4.setBounds(63, 115, 70, 14);
+		label_4.setBounds(389, 58, 70, 14);
 		frame.getContentPane().add(label_4);
 		
 		JButton btnAbbrechen = new JButton("Abbrechen");
@@ -207,7 +220,7 @@ public class ZitateHinzufuegen {
 				
 			}
 		});
-		btnAbbrechen.setBounds(260, 290, 117, 23);
+		btnAbbrechen.setBounds(303, 349, 156, 23);
 		frame.getContentPane().add(btnAbbrechen);
 		
 		frame.addWindowListener(new WindowAdapter() {
