@@ -18,7 +18,11 @@ import javax.swing.JPasswordField;
 
 import javax.xml.bind.DatatypeConverter;
 
-import com.sun.glass.ui.Application;;
+import com.sun.glass.ui.Application;
+import javax.swing.JTextArea;
+import java.awt.Color;
+import java.awt.SystemColor;
+import java.awt.Font;;
 
 public class Login {
 
@@ -60,9 +64,16 @@ public class Login {
 		frmLogin.getContentPane().setLayout(null);
 		frmLogin.setVisible(true);
 		
-		JLabel lbltest = new JLabel("Benutzername:");
-		lbltest.setBounds(63, 39, 113, 14);
-		frmLogin.getContentPane().add(lbltest);
+		JLabel lblUsername = new JLabel("Benutzername:");
+		lblUsername.setBounds(63, 39, 113, 14);
+		frmLogin.getContentPane().add(lblUsername);
+		
+		JTextArea txtErrorMessages = new JTextArea();
+		txtErrorMessages.setFont(new Font("Monospaced", Font.BOLD, 16));
+		txtErrorMessages.setForeground(new Color(220, 20, 60));
+		txtErrorMessages.setBackground(SystemColor.menu);
+		txtErrorMessages.setBounds(63, 118, 278, 51);
+		frmLogin.getContentPane().add(txtErrorMessages);
 		
 		JButton btnLogin = new JButton("Einloggen");
 		btnLogin.addActionListener(new ActionListener() {
@@ -100,7 +111,7 @@ public class Login {
 								frmLogin.dispose();
 						}
 						else {
-							System.out.println("Nutzerdaten waren falsch.");
+							txtErrorMessages.setText("Nutzerdaten waren falsch.");
 						}
 					} catch (SQLException e) {
 						// TODO Auto-generated catch block
@@ -116,31 +127,31 @@ public class Login {
 				
 			}
 		});
-		btnLogin.setBounds(63, 163, 115, 23);
+		btnLogin.setBounds(63, 182, 115, 23);
 		frmLogin.getContentPane().add(btnLogin);
 		
-		JButton btnAbbrechen = new JButton("Beenden");
-		btnAbbrechen.addActionListener(new ActionListener() {
+		JButton btnCancel = new JButton("Beenden");
+		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				frmLogin.dispose();
 			}
 		});
-		btnAbbrechen.setBounds(335, 227, 89, 23);
-		frmLogin.getContentPane().add(btnAbbrechen);
+		btnCancel.setBounds(331, 218, 89, 23);
+		frmLogin.getContentPane().add(btnCancel);
 		
-		JButton btnRegiestrieren = new JButton("Regiestrieren");
-		btnRegiestrieren.addActionListener(new ActionListener() {
+		JButton btnRegistration = new JButton("Regiestrieren");
+		btnRegistration.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				frmLogin.dispose();
 				Registrieren registration = new Registrieren();
 			}
 		});
-		btnRegiestrieren.setBounds(226, 163, 115, 23);
-		frmLogin.getContentPane().add(btnRegiestrieren);
+		btnRegistration.setBounds(226, 182, 115, 23);
+		frmLogin.getContentPane().add(btnRegistration);
 		
-		JLabel lblPasswort = new JLabel("Passwort: ");
-		lblPasswort.setBounds(63, 81, 89, 14);
-		frmLogin.getContentPane().add(lblPasswort);
+		JLabel lblPassword = new JLabel("Passwort: ");
+		lblPassword.setBounds(63, 81, 89, 14);
+		frmLogin.getContentPane().add(lblPassword);
 		
 		txtUser = new JTextField();
 		txtUser.setBounds(181, 36, 160, 20);
@@ -150,7 +161,5 @@ public class Login {
 		txtPassword = new JPasswordField();
 		txtPassword.setBounds(181, 77, 160, 22);
 		frmLogin.getContentPane().add(txtPassword);
-		
-		
 	}
 }

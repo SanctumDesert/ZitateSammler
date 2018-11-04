@@ -5,6 +5,7 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.xml.bind.DatatypeConverter;
 import javax.swing.JPasswordField;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
@@ -15,6 +16,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.awt.event.ActionEvent;
+import javax.swing.JTextArea;
+import java.awt.Color;
+import java.awt.SystemColor;
+import java.awt.Font;
 
 public class Registrieren {
 
@@ -62,71 +67,81 @@ public class Registrieren {
 		
 		JLabel lblBenutzername = new JLabel("Benutzername:");
 		lblBenutzername.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblBenutzername.setBounds(59, 53, 89, 14);
+		lblBenutzername.setBounds(59, 26, 89, 14);
 		frame.getContentPane().add(lblBenutzername);
 		
 		JLabel lblVorname = new JLabel("Vorname:");
 		lblVorname.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblVorname.setBounds(59, 88, 89, 14);
+		lblVorname.setBounds(59, 53, 89, 14);
 		frame.getContentPane().add(lblVorname);
 		
 		JLabel lblNachname = new JLabel("Nachname:");
 		lblNachname.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblNachname.setBounds(59, 121, 89, 14);
+		lblNachname.setBounds(59, 80, 89, 14);
 		frame.getContentPane().add(lblNachname);
 		
 		JLabel lblMail = new JLabel("Mail:");
 		lblMail.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblMail.setBounds(59, 152, 89, 14);
+		lblMail.setBounds(59, 107, 89, 14);
 		frame.getContentPane().add(lblMail);
 		
 		JLabel lblPasswort = new JLabel("Passwort:");
 		lblPasswort.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblPasswort.setBounds(59, 197, 89, 14);
+		lblPasswort.setBounds(59, 134, 89, 14);
 		frame.getContentPane().add(lblPasswort);
 		
 		JLabel lblPasswortWiederholen = new JLabel("Passwort wiederholen:");
 		lblPasswortWiederholen.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblPasswortWiederholen.setBounds(17, 221, 131, 14);
+		lblPasswortWiederholen.setBounds(17, 161, 131, 14);
 		frame.getContentPane().add(lblPasswortWiederholen);
 		
 		txtPassword = new JPasswordField();
-		txtPassword.setBounds(156, 194, 148, 17);
+		txtPassword.setBounds(156, 132, 148, 17);
 		frame.getContentPane().add(txtPassword);
 		
 		txtPasswordRepeat = new JPasswordField();
-		txtPasswordRepeat.setBounds(156, 219, 148, 17);
+		txtPasswordRepeat.setBounds(156, 159, 148, 17);
 		frame.getContentPane().add(txtPasswordRepeat);
 		
 		txtUsername = new JTextField();
-		txtUsername.setBounds(156, 50, 148, 20);
+		txtUsername.setBounds(156, 23, 148, 20);
 		frame.getContentPane().add(txtUsername);
 		txtUsername.setColumns(10);
 		
 		txtFirstName = new JTextField();
 		txtFirstName.setColumns(10);
-		txtFirstName.setBounds(156, 85, 148, 20);
+		txtFirstName.setBounds(156, 50, 148, 20);
 		frame.getContentPane().add(txtFirstName);
 		
 		txtLastName = new JTextField();
 		txtLastName.setColumns(10);
-		txtLastName.setBounds(156, 118, 148, 20);
+		txtLastName.setBounds(156, 77, 148, 20);
 		frame.getContentPane().add(txtLastName);
 		
 		txtMail = new JTextField();
 		txtMail.setColumns(10);
-		txtMail.setBounds(156, 149, 148, 20);
+		txtMail.setBounds(156, 104, 148, 20);
 		frame.getContentPane().add(txtMail);
+		
+		JTextArea txtErrorMessages = new JTextArea();
+		txtErrorMessages.setEditable(false);
+		txtErrorMessages.setLineWrap(true);
+		txtErrorMessages.setFont(new Font("Monospaced", Font.PLAIN, 12));
+		txtErrorMessages.setBackground(SystemColor.menu);
+		txtErrorMessages.setForeground(new Color(220, 20, 60));
+		txtErrorMessages.setBounds(59, 188, 295, 112);
+		frame.getContentPane().add(txtErrorMessages);
 		
 		JButton btnRegister = new JButton("Registrieren");
 		btnRegister.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
+				StringBuilder builder = new StringBuilder();
+				txtErrorMessages.setText("");
 				boolean validInput = true;
 				boolean validMail = false;
 				//Check if all fields are set.
-				if(txtUsername.getText()==null) {
-					System.out.println("Bitte gib einen Nutzernamen ein.");
+				if(txtUsername.getText().equals("")) {
+					builder.append("Bitte gib einen Nutzernamen ein.\n");
 					validInput = false;
 				}
 				else {
@@ -136,7 +151,7 @@ public class Registrieren {
 						myStmt.setString(1, txtUsername.getText());
 						ResultSet myRs = myStmt.executeQuery();
 						if(myRs.next()) {
-							System.out.println("Dieser Nutzername ist bereits vergeben.");
+							builder.append("Dieser Nutzername ist bereits vergeben.\n");
 							validInput = false;
 						}
 					} catch (SQLException e) {
@@ -144,16 +159,16 @@ public class Registrieren {
 						e.printStackTrace();
 					}
 				}
-				if(txtFirstName.getText()==null) {
-					System.out.println("Bitte gib einen Vornamen ein.");
+				if(txtFirstName.getText().equals("")) {
+					builder.append("Bitte gib einen Vornamen ein.\n");
 					validInput = false;
 				}
-				if(txtLastName.getText()==null) {
-					System.out.println("Bitte gib einen Nachnamen ein.");
+				if(txtLastName.getText().equals("")) {
+					builder.append("Bitte gib einen Nachnamen ein.\n");
 					validInput = false;
 				}
-				if(txtMail.getText()==null) {
-					System.out.println("Bitte gib eine Mailadresse ein.");
+				if(txtMail.getText().equals("")) {
+					builder.append("Bitte gib eine Mailadresse ein.\n");
 					validInput = false;
 				}
 				else {
@@ -163,7 +178,7 @@ public class Registrieren {
 						myStmt.setString(1, txtMail.getText());
 						ResultSet myRs = myStmt.executeQuery();
 						if(myRs.next()) {
-							System.out.println("Diese Mailadresse wird bereits verwendet.");
+							builder.append("Diese Mailadresse wird bereits verwendet.\n");
 							validInput = false;
 						}
 					} catch (SQLException e) {
@@ -172,19 +187,19 @@ public class Registrieren {
 					}
 				}
 				if(txtPassword.getPassword()==null) {
-					System.out.println("Bitte gib ein Passwort ein.");
+					builder.append("Bitte gib ein Passwort ein.\n");
 					validInput = false;
 				}
 				if(txtPasswordRepeat.getPassword()==null) {
-					System.out.println("Bitte wiederhole dein Passwort.");
+					builder.append("Bitte wiederhole dein Passwort.\n");
 					validInput = false;
 				}
 				if(!Arrays.equals(txtPassword.getPassword(),txtPasswordRepeat.getPassword())) {
-					System.out.println("Die PasswÃ¶rter stimmen nicht Ã¼berein.");
+					builder.append("Die Passwörter stimmen nicht überein.\n");
 					validInput = false;
 				}
 				if(txtPassword.getPassword().length<6) {
-					System.out.println("Das Passwort muss mindestens 6 Zeichen lang sein.");
+					builder.append("Das Passwort muss mindestens 6 Zeichen lang sein.\n");
 					validInput = false;
 				}
 				if(txtMail.getText().matches("[a-z0-9][-a-z0-9_+.]*[a-z0-9]@[a-z0-9][-a-z0-9.]*[a-z0-9][.](com|de)")) {
@@ -209,20 +224,20 @@ public class Registrieren {
 					}
 				}
 				if(uppercase==false) {
-					System.out.println("Das Passwort muss mindestens einen Kleinbuchstaben enthalten.");
+					builder.append("Das Passwort muss mindestens einen Kleinbuchstaben enthalten.\n");
 					validInput = false;
 				}
 				if(lowercase==false) {
-					System.out.println("Das passwort muss mindestens einen GroÃŸbuchstaben enthalten.");
+					builder.append("Das passwort muss mindestens einen Großbuchstaben enthalten.\n");
 					validInput=false;
 				}
 				if(special==false) {
-					System.out.println("Das Passowrt muss mindestens ein gueltiges Sonderzeichen enthalten.");
-					System.out.println("Gueltige Sonderzeichen sind !, $, %, &");
+					builder.append("Das Passowrt muss mindestens ein gueltiges Sonderzeichen enthalten.\n");
+					builder.append("Gueltige Sonderzeichen sind !, $, %, &\n");
 					validInput=false;
 				}if(validMail==false) {
-					System.out.println("Die angegeben Mailadresse folgt nicht dem validen Mailpattern.");
-					System.out.println("Beispiel: xxx.yyy@zzz.com");
+					builder.append("Die angegeben Mailadresse folgt nicht dem validen Mailpattern.\n");
+					builder.append("Beispiel: xxx.yyy@zzz.com\n");
 					validInput=false;
 				}
 				
@@ -248,7 +263,7 @@ public class Registrieren {
 					
 					if(validInput==true) {
 						myStmt.executeUpdate();
-						System.out.println("User hinzugefügt");
+						builder.append("User hinzugefügt\n");
 						frame.dispose();
 						Login login = new Login();
 					}
@@ -257,18 +272,19 @@ public class Registrieren {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 				}
+				txtErrorMessages.setText(builder.toString());
 			}
 		});
-		btnRegister.setBounds(69, 292, 114, 23);
-		frame.getContentPane().add(btnRegister);
 		
+		btnRegister.setBounds(86, 313, 114, 23);
+		frame.getContentPane().add(btnRegister);
 		JButton btnCancel = new JButton("Abbrechen");
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				frame.dispose();
 			}
 		});
-		btnCancel.setBounds(241, 292, 114, 23);
+		btnCancel.setBounds(240, 313, 114, 23);
 		frame.getContentPane().add(btnCancel);
 	}
 }

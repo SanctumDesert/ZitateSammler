@@ -94,11 +94,6 @@ public class ZitatAnzeige {
 		frmHauptmenue.getContentPane().add(list);
 		
 		JButton btnZitatLschen = new JButton("Zitat l\u00F6schen");
-		btnZitatLschen.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				//list.getSelectedValue()
-			}
-		});
 		btnZitatLschen.setBounds(20, 441, 105, 23);
 		frmHauptmenue.getContentPane().add(btnZitatLschen);
 		
