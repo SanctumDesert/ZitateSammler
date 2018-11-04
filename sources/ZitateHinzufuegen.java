@@ -135,6 +135,7 @@ public class ZitateHinzufuegen {
 				String inputQuote="";
 				if(txtInputQuote.getText()!=null) inputQuote = txtInputQuote.getText();
 				
+				
 				PreparedStatement myStmt;
 				try {
 	
