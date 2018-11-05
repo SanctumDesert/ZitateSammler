@@ -1,4 +1,5 @@
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.JFrame;
 import javax.swing.JComboBox;
@@ -9,10 +10,15 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.ListSelectionModel;
+import javax.swing.JScrollBar;
 
 public class ZitatAnzeige {
 
 	private JFrame frmHauptmenue;
+	private JTable table;
 
 	/**
 	 * Launch the application.
@@ -84,14 +90,7 @@ public class ZitatAnzeige {
 		lblLehrer.setBounds(236, 53, 70, 14);
 		frmHauptmenue.getContentPane().add(lblLehrer);
 		
-		JButton btnZitateAnzeigen = new JButton("Zitate anzeigen");
-		btnZitateAnzeigen.setBounds(20, 127, 119, 23);
-		frmHauptmenue.getContentPane().add(btnZitateAnzeigen);
 		
-		@SuppressWarnings("rawtypes")
-		JList list = new JList();
-		list.setBounds(10, 176, 467, 254);
-		frmHauptmenue.getContentPane().add(list);
 		
 		JButton btnZitatLschen = new JButton("Zitat l\u00F6schen");
 		btnZitatLschen.setBounds(20, 441, 105, 23);
@@ -102,6 +101,11 @@ public class ZitatAnzeige {
 		frmHauptmenue.getContentPane().add(btnZitatndern);
 		
 		JButton btnSchliessen = new JButton("Schliessen");
+		btnSchliessen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				frmHauptmenue.dispose();
+			}
+		});
 		btnSchliessen.setBounds(346, 502, 105, 23);
 		frmHauptmenue.getContentPane().add(btnSchliessen);
 		
@@ -134,6 +138,62 @@ public class ZitatAnzeige {
 		JLabel lblSprecher = new JLabel("Sprecher");
 		lblSprecher.setBounds(353, 53, 70, 14);
 		frmHauptmenue.getContentPane().add(lblSprecher);
+		
+		table = new JTable();
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		table.setModel(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+				"ID", "Zitat", "Sprecher", "Kurs", "Klasse"
+			}
+		) {
+			Class[] columnTypes = new Class[] {
+				Integer.class, Object.class, String.class, String.class, Object.class
+			};
+			public Class getColumnClass(int columnIndex) {
+				return columnTypes[columnIndex];
+			}
+			boolean[] columnEditables = new boolean[] {
+				false, false, false, false, false
+			};
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
+			}
+		});
+		table.getColumnModel().getColumn(0).setPreferredWidth(40);
+		table.getColumnModel().getColumn(1).setPreferredWidth(90);
+		table.getColumnModel().getColumn(2).setPreferredWidth(90);
+		table.getColumnModel().getColumn(4).setPreferredWidth(50);
+		
+		JScrollBar scrollBar = new JScrollBar();
+		scrollBar.setBounds(434, 161, 17, 268);
+		frmHauptmenue.getContentPane().add(scrollBar);
+		table.setBounds(20, 162, 431, 268);
+		frmHauptmenue.getContentPane().add(table);
+		
+		JButton btnZitateAnzeigen = new JButton("Zitate anzeigen");
+		btnZitateAnzeigen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					DefaultTableModel model = (DefaultTableModel) table.getModel();
+					Statement myStmt = connection.getConnection().createStatement();
+					ResultSet myRs = myStmt.executeQuery("SELECT z.ID, Zitat, u.Vorname, u.Nachname, k.Kurs, c.Klasse FROM zitatedb.tblzitate as z\r\n" + 
+						       "JOIN tbluser as u on u.ID = z.SprecherID\r\n" + 
+						       "JOIN tblKurs as k on z.KursID = k.ID\r\n" +
+						       "JOIN tblklassen as c ON z.KlasseID = c.ID");
+					while(myRs.next()) {
+						model.addRow(new Object[] {myRs.getString("ID"), myRs.getString("Zitat"), myRs.getString("Vorname") + " " + myRs.getString("Nachname"), myRs.getString("Kurs"), myRs.getString("Klasse")});
+					}
+					
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+		btnZitateAnzeigen.setBounds(20, 127, 119, 23);
+		frmHauptmenue.getContentPane().add(btnZitateAnzeigen);
 		
 		frmHauptmenue.addWindowListener(new WindowAdapter() {
 			

@@ -202,7 +202,7 @@ public class Registrieren {
 					builder.append("Das Passwort muss mindestens 6 Zeichen lang sein.\n");
 					validInput = false;
 				}
-				if(txtMail.getText().matches("[a-z0-9][-a-z0-9_+.]*[a-z0-9]@[a-z0-9][-a-z0-9.]*[a-z0-9][.](com|de)")) {
+				if(txtMail.getText().toLowerCase().matches("[a-z0-9][-a-z0-9_+.]*[a-z0-9]@[a-z0-9][-a-z0-9.]*[a-z0-9][.](com|de)")) {
 					validMail = true;
 				}
 				boolean uppercase=false;
