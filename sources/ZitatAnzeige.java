@@ -48,7 +48,7 @@ public class ZitatAnzeige {
 		Connect connection = new Connect();
 		
 		frmHauptmenue.setTitle("Hauptmen\u00FC");
-		frmHauptmenue.setBounds(100, 100, 503, 575);
+		frmHauptmenue.setBounds(100, 100, 511, 608);
 		frmHauptmenue.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmHauptmenue.getContentPane().setLayout(null);
 		frmHauptmenue.setVisible(true);
@@ -69,7 +69,7 @@ public class ZitatAnzeige {
 		frmHauptmenue.getContentPane().add(cbTeacher);
 		
 		JLabel lblZitateSuchen = new JLabel("Zitate suchen:");
-		lblZitateSuchen.setBounds(20, 30, 70, 14);
+		lblZitateSuchen.setBounds(20, 30, 162, 14);
 		frmHauptmenue.getContentPane().add(lblZitateSuchen);
 		
 		JLabel lblKurs = new JLabel("Kurs");
@@ -85,6 +85,7 @@ public class ZitatAnzeige {
 		frmHauptmenue.getContentPane().add(lblLehrer);
 		
 		JButton btnZitateAnzeigen = new JButton("Zitate anzeigen");
+		btnZitateAnzeigen.setToolTipText("Zitate anzeigen");
 		btnZitateAnzeigen.setBounds(20, 127, 119, 23);
 		frmHauptmenue.getContentPane().add(btnZitateAnzeigen);
 		
@@ -94,22 +95,27 @@ public class ZitatAnzeige {
 		frmHauptmenue.getContentPane().add(list);
 		
 		JButton btnZitatLschen = new JButton("Zitat l\u00F6schen");
+		btnZitatLschen.setToolTipText("Zitat l\u00F6schen");
 		btnZitatLschen.setBounds(20, 441, 105, 23);
 		frmHauptmenue.getContentPane().add(btnZitatLschen);
 		
 		JButton btnZitatndern = new JButton("Zitat \u00E4ndern");
+		btnZitatndern.setToolTipText("Zitat \u00E4ndern");
 		btnZitatndern.setBounds(346, 441, 105, 23);
 		frmHauptmenue.getContentPane().add(btnZitatndern);
 		
 		JButton btnSchliessen = new JButton("Schliessen");
+		btnSchliessen.setToolTipText("Schliessen");
 		btnSchliessen.setBounds(346, 502, 105, 23);
 		frmHauptmenue.getContentPane().add(btnSchliessen);
 		
 		JButton btnNichtSchliessen = new JButton("Account");
+		btnNichtSchliessen.setToolTipText("Account");
 		btnNichtSchliessen.setBounds(20, 502, 105, 23);
 		frmHauptmenue.getContentPane().add(btnNichtSchliessen);
 		
 		JButton btnZitateHinzufgen = new JButton("Zitat Hinzuf\u00FCgen");
+		btnZitateHinzufgen.setToolTipText("Zitat Hinzuf\u00FCgen");
 		btnZitateHinzufgen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				//frmHauptmenue.setVisible(false);
@@ -123,6 +129,7 @@ public class ZitatAnzeige {
 		frmHauptmenue.getContentPane().add(btnZitateHinzufgen);
 		
 		JButton btnNewButton = new JButton("Export");
+		btnNewButton.setToolTipText("Export");
 		btnNewButton.setBounds(183, 441, 105, 23);
 		frmHauptmenue.getContentPane().add(btnNewButton);
 		
@@ -134,6 +141,19 @@ public class ZitatAnzeige {
 		JLabel lblSprecher = new JLabel("Sprecher");
 		lblSprecher.setBounds(353, 53, 70, 14);
 		frmHauptmenue.getContentPane().add(lblSprecher);
+		
+		if(user.admin==true) {
+			JButton btnAdmin = new JButton("Adminbereich");
+			btnAdmin.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					Adminbereich adminbereich = new Adminbereich(user);
+					frmHauptmenue.dispose();
+				}
+			});
+			btnAdmin.setToolTipText("Adminbereich");
+			btnAdmin.setBounds(183, 503, 105, 23);
+			frmHauptmenue.getContentPane().add(btnAdmin);
+		}
 		
 		frmHauptmenue.addWindowListener(new WindowAdapter() {
 			
