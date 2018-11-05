@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
@@ -5,3 +6,12 @@
 	<classpathentry kind="lib" path="D:/Programme/GitHub/ZitateSammler/mysql-connector-java-8.0.12/mysql-connector-java-8.0.12.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>
+=======
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path=""/>
+	<classpathentry exported="true" kind="lib" path="D:/Dateien/GitHub/ZitateSammler-master (1)/ZitateSammler-master/mysql-connector-java-8.0.12/mysql-connector-java-8.0.12.jar"/>
+	<classpathentry kind="output" path=""/>
+</classpath>
+>>>>>>> fd42149b539749ad0f4f810c8c6dd8779ea3c637
