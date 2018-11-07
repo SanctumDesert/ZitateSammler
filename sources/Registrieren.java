@@ -147,7 +147,7 @@ public class Registrieren {
 				else {
 					PreparedStatement myStmt;
 					try {
-						myStmt = conn.getConnection().prepareStatement("SELECT * FROM tbluser WHERE nutzername=?");
+						myStmt = conn.getConnection().prepareStatement("SELECT * FROM tbluser WHERE nutzername = ?");
 						myStmt.setString(1, txtUsername.getText());
 						ResultSet myRs = myStmt.executeQuery();
 						if(myRs.next()) {
@@ -174,7 +174,7 @@ public class Registrieren {
 				else {
 					PreparedStatement myStmt;
 					try {
-						myStmt = conn.getConnection().prepareStatement("SELECT * FROM tbluser WHERE mail=?");
+						myStmt = conn.getConnection().prepareStatement("SELECT * FROM tbluser WHERE mail = ?");
 						myStmt.setString(1, txtMail.getText());
 						ResultSet myRs = myStmt.executeQuery();
 						if(myRs.next()) {

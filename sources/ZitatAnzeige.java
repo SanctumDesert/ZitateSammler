@@ -90,15 +90,6 @@ public class ZitatAnzeige {
 		lblLehrer.setBounds(236, 53, 70, 14);
 		frmHauptmenue.getContentPane().add(lblLehrer);
 		
-<<<<<<< HEAD
-		JButton btnZitateAnzeigen = new JButton("Zitate anzeigen");
-		btnZitateAnzeigen.setToolTipText("Zitate anzeigen");
-		btnZitateAnzeigen.setBounds(20, 127, 119, 23);
-		frmHauptmenue.getContentPane().add(btnZitateAnzeigen);
-=======
->>>>>>> fd42149b539749ad0f4f810c8c6dd8779ea3c637
-		
-		
 		JButton btnZitatLschen = new JButton("Zitat l\u00F6schen");
 		btnZitatLschen.setToolTipText("Zitat l\u00F6schen");
 		btnZitatLschen.setBounds(20, 441, 105, 23);
@@ -110,15 +101,12 @@ public class ZitatAnzeige {
 		frmHauptmenue.getContentPane().add(btnZitatndern);
 		
 		JButton btnSchliessen = new JButton("Schliessen");
-<<<<<<< HEAD
 		btnSchliessen.setToolTipText("Schliessen");
-=======
 		btnSchliessen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				frmHauptmenue.dispose();
 			}
 		});
->>>>>>> fd42149b539749ad0f4f810c8c6dd8779ea3c637
 		btnSchliessen.setBounds(346, 502, 105, 23);
 		frmHauptmenue.getContentPane().add(btnSchliessen);
 		
@@ -155,7 +143,6 @@ public class ZitatAnzeige {
 		lblSprecher.setBounds(353, 53, 70, 14);
 		frmHauptmenue.getContentPane().add(lblSprecher);
 		
-<<<<<<< HEAD
 		if(user.admin==true) {
 			JButton btnAdmin = new JButton("Adminbereich");
 			btnAdmin.addActionListener(new ActionListener() {
@@ -168,7 +155,6 @@ public class ZitatAnzeige {
 			btnAdmin.setBounds(183, 503, 105, 23);
 			frmHauptmenue.getContentPane().add(btnAdmin);
 		}
-=======
 		table = new JTable();
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table.setModel(new DefaultTableModel(
@@ -224,7 +210,6 @@ public class ZitatAnzeige {
 		});
 		btnZitateAnzeigen.setBounds(20, 127, 119, 23);
 		frmHauptmenue.getContentPane().add(btnZitateAnzeigen);
->>>>>>> fd42149b539749ad0f4f810c8c6dd8779ea3c637
 		
 		frmHauptmenue.addWindowListener(new WindowAdapter() {
 			
@@ -240,9 +225,9 @@ public class ZitatAnzeige {
 					while(myRs.next()) {
 						cbSubject.addItem(myRs.getString("Kurs"));
 					}
-					myRs = myStmt.executeQuery("SELECT DISTINCT Lehrer FROM tblkurs");
+					myRs = myStmt.executeQuery("SELECT DISTINCT Name FROM tbllehrer");
 					while(myRs.next()) {
-						cbTeacher.addItem(myRs.getString("Lehrer"));
+						cbTeacher.addItem(myRs.getString("Name"));
 					}
 					cbSubject.setSelectedIndex(-1);
 					cbClass.setSelectedIndex(-1);

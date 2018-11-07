@@ -163,14 +163,14 @@ private void Einloggen()
 		//Check if user is valid
 		PreparedStatement myStmt;
 		try {
-			myStmt = connection.getConnection().prepareStatement("SELECT * FROM tbluser WHERE nutzername=? AND passwort=?");
+			myStmt = connection.getConnection().prepareStatement("SELECT * FROM tbluser WHERE nutzername=? AND passwort=? AND deleted = 0");
 			myStmt.setString(1, username);
 			myStmt.setString(2, test);
 			ResultSet myRs = myStmt.executeQuery();
 			if(myRs.next()==true) {
 					System.out.println("Login erfolgreich.");
 					// Creates new user object
-					User user = new User(myRs.getInt(1), myRs.getString(2), myRs.getString(3), myRs.getString(4), myRs.getString(5), myRs.getString(6),myRs.getBoolean(7));
+					User user = new User(myRs.getInt(1), myRs.getString(3), myRs.getString(4), myRs.getString(5), myRs.getString(6), myRs.getString(7),myRs.getBoolean(8));
 					// Opens the main window
 					ZitatAnzeige zitateAnzeigen = new ZitatAnzeige(user);
 					// Closes the login frame
