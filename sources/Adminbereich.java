@@ -5,10 +5,6 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.sql.ResultSet;
-import java.sql.Statement;
 
 public class Adminbereich {
 
@@ -17,7 +13,6 @@ public class Adminbereich {
 	/**
 	 * Launch the application.
 	 */
-	/*
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -30,83 +25,74 @@ public class Adminbereich {
 			}
 		});
 	}
-	*/
 
 	/**
 	 * Create the application.
-	 * @param user 
 	 */
-	public Adminbereich(User user) {
-		initialize(user);
+	public Adminbereich() {
+		initialize();
 	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize(User user) {
+	private void initialize() {
 		frame = new JFrame();
-		
-		Connect connection = new Connect();
-		
 		frame.setBounds(100, 100, 658, 432);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
-		frame.setVisible(true);
 		
-		JComboBox cbUser = new JComboBox();
-		cbUser.setBounds(15, 216, 134, 20);
-		frame.getContentPane().add(cbUser);
+		JComboBox comboBox = new JComboBox();
+		comboBox.setBounds(98, 216, 134, 20);
+		frame.getContentPane().add(comboBox);
 		
-		JLabel lblUser = new JLabel("User");
-		lblUser.setHorizontalAlignment(SwingConstants.LEFT);
-		lblUser.setBounds(15, 199, 46, 14);
+		JLabel lblUser = new JLabel("User:");
+		lblUser.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblUser.setBounds(42, 219, 46, 14);
 		frame.getContentPane().add(lblUser);
 		
-		JButton btnUserDelete = new JButton("User l\u00F6schen");
-		btnUserDelete.setBounds(164, 215, 134, 23);
-		frame.getContentPane().add(btnUserDelete);
+		JButton btnLschen = new JButton("l\u00F6schen");
+		btnLschen.setBounds(242, 215, 110, 23);
+		frame.getContentPane().add(btnLschen);
 		
-		JComboBox cbSubject = new JComboBox();
-		cbSubject.setBounds(15, 73, 134, 20);
-		frame.getContentPane().add(cbSubject);
+		JComboBox comboBox_1 = new JComboBox();
+		comboBox_1.setBounds(42, 73, 134, 20);
+		frame.getContentPane().add(comboBox_1);
 		
-		JComboBox cbTeacher = new JComboBox();
-		cbTeacher.setBounds(164, 73, 134, 20);
-		frame.getContentPane().add(cbTeacher);
+		JComboBox comboBox_2 = new JComboBox();
+		comboBox_2.setBounds(186, 73, 134, 20);
+		frame.getContentPane().add(comboBox_2);
 		
-		JComboBox cbClass = new JComboBox();
-		cbClass.setBounds(313, 73, 134, 20);
-		frame.getContentPane().add(cbClass);
+		JComboBox comboBox_3 = new JComboBox();
+		comboBox_3.setBounds(330, 73, 134, 20);
+		frame.getContentPane().add(comboBox_3);
+		
+		JComboBox comboBox_4 = new JComboBox();
+		comboBox_4.setBounds(474, 73, 134, 20);
+		frame.getContentPane().add(comboBox_4);
 		
 		JLabel lblFach = new JLabel("Fach");
-		lblFach.setBounds(15, 48, 46, 14);
+		lblFach.setBounds(42, 48, 46, 14);
 		frame.getContentPane().add(lblFach);
 		
 		JLabel lblLehrer = new JLabel("Lehrer");
-		lblLehrer.setBounds(164, 48, 46, 14);
+		lblLehrer.setBounds(186, 48, 46, 14);
 		frame.getContentPane().add(lblLehrer);
 		
 		JLabel lblKlasse = new JLabel("Klasse");
-		lblKlasse.setBounds(313, 48, 46, 14);
+		lblKlasse.setBounds(330, 48, 46, 14);
 		frame.getContentPane().add(lblKlasse);
 		
-		JButton btnAddCourse = new JButton("Kurs Hinzuf\u00FCgen");
-		btnAddCourse.setBounds(462, 72, 159, 23);
-		frame.getContentPane().add(btnAddCourse);
+		JLabel lblJahrgang = new JLabel("Jahrgang");
+		lblJahrgang.setBounds(474, 48, 56, 14);
+		frame.getContentPane().add(lblJahrgang);
 		
-		JButton btnDone = new JButton("Fertig");
-		btnDone.setBounds(462, 215, 110, 23);
-		frame.getContentPane().add(btnDone);
+		JButton btnKursHinzufgen = new JButton("Kurs Hinzuf\u00FCgen");
+		btnKursHinzufgen.setBounds(474, 120, 110, 23);
+		frame.getContentPane().add(btnKursHinzufgen);
 		
-		frame.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowOpened(WindowEvent e) {
-				Statement myStmt = connection.getConnection().createStatement();
-				ResultSet myRs = myStmt.executeQuery("SELECT nutzernamen FROM tbluser");
-				while(myRs.next()) {
-					cbClass.addItem(myRs.getString("Klasse"));
-				}
-			}
-		});
+		JButton btnNewButton = new JButton("Fertig");
+		btnNewButton.setBounds(474, 338, 110, 23);
+		frame.getContentPane().add(btnNewButton);
 	}
 }

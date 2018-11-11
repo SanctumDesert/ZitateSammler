@@ -9,17 +9,35 @@ import javax.swing.JList;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.ActionListener;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+import java.io.FileOutputStream;
+import com.lowagie.text.Document;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfWriter;
+
+
+import java.awt.BorderLayout;
+import java.awt.Graphics2D;
+import java.awt.Shape;
+import java.io.FileOutputStream;
+
 
 public class ZitatAnzeige {
 
 	private JFrame frmHauptmenue;
 	private JTable table;
-
+	private int zitatID;
+	DefaultTableModel model;
 	/**
 	 * Launch the application.
 	 */
@@ -54,7 +72,7 @@ public class ZitatAnzeige {
 		Connect connection = new Connect();
 		
 		frmHauptmenue.setTitle("Hauptmen\u00FC");
-		frmHauptmenue.setBounds(100, 100, 511, 608);
+		frmHauptmenue.setBounds(100, 100, 503, 575);
 		frmHauptmenue.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmHauptmenue.getContentPane().setLayout(null);
 		frmHauptmenue.setVisible(true);
@@ -75,7 +93,7 @@ public class ZitatAnzeige {
 		frmHauptmenue.getContentPane().add(cbTeacher);
 		
 		JLabel lblZitateSuchen = new JLabel("Zitate suchen:");
-		lblZitateSuchen.setBounds(20, 30, 162, 14);
+		lblZitateSuchen.setBounds(20, 30, 70, 14);
 		frmHauptmenue.getContentPane().add(lblZitateSuchen);
 		
 		JLabel lblKurs = new JLabel("Kurs");
@@ -90,45 +108,36 @@ public class ZitatAnzeige {
 		lblLehrer.setBounds(236, 53, 70, 14);
 		frmHauptmenue.getContentPane().add(lblLehrer);
 		
-<<<<<<< HEAD
-		JButton btnZitateAnzeigen = new JButton("Zitate anzeigen");
-		btnZitateAnzeigen.setToolTipText("Zitate anzeigen");
-		btnZitateAnzeigen.setBounds(20, 127, 119, 23);
-		frmHauptmenue.getContentPane().add(btnZitateAnzeigen);
-=======
->>>>>>> fd42149b539749ad0f4f810c8c6dd8779ea3c637
 		
 		
 		JButton btnZitatLschen = new JButton("Zitat l\u00F6schen");
-		btnZitatLschen.setToolTipText("Zitat l\u00F6schen");
-		btnZitatLschen.setBounds(20, 441, 105, 23);
+		btnZitatLschen.setBounds(20, 441, 119, 23);
 		frmHauptmenue.getContentPane().add(btnZitatLschen);
 		
 		JButton btnZitatndern = new JButton("Zitat \u00E4ndern");
-		btnZitatndern.setToolTipText("Zitat \u00E4ndern");
-		btnZitatndern.setBounds(346, 441, 105, 23);
+		btnZitatndern.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				frmHauptmenue.dispose();
+				ZitatAendern changeQuote = new ZitatAendern(user, zitatID);
+			}
+		});
+		btnZitatndern.setBounds(332, 441, 119, 23);
 		frmHauptmenue.getContentPane().add(btnZitatndern);
 		
 		JButton btnSchliessen = new JButton("Schliessen");
-<<<<<<< HEAD
-		btnSchliessen.setToolTipText("Schliessen");
-=======
 		btnSchliessen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				frmHauptmenue.dispose();
 			}
 		});
->>>>>>> fd42149b539749ad0f4f810c8c6dd8779ea3c637
 		btnSchliessen.setBounds(346, 502, 105, 23);
 		frmHauptmenue.getContentPane().add(btnSchliessen);
 		
 		JButton btnNichtSchliessen = new JButton("Account");
-		btnNichtSchliessen.setToolTipText("Account");
 		btnNichtSchliessen.setBounds(20, 502, 105, 23);
 		frmHauptmenue.getContentPane().add(btnNichtSchliessen);
 		
 		JButton btnZitateHinzufgen = new JButton("Zitat Hinzuf\u00FCgen");
-		btnZitateHinzufgen.setToolTipText("Zitat Hinzuf\u00FCgen");
 		btnZitateHinzufgen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				//frmHauptmenue.setVisible(false);
@@ -142,7 +151,6 @@ public class ZitatAnzeige {
 		frmHauptmenue.getContentPane().add(btnZitateHinzufgen);
 		
 		JButton btnNewButton = new JButton("Export");
-		btnNewButton.setToolTipText("Export");
 		btnNewButton.setBounds(183, 441, 105, 23);
 		frmHauptmenue.getContentPane().add(btnNewButton);
 		
@@ -155,21 +163,43 @@ public class ZitatAnzeige {
 		lblSprecher.setBounds(353, 53, 70, 14);
 		frmHauptmenue.getContentPane().add(lblSprecher);
 		
-<<<<<<< HEAD
-		if(user.admin==true) {
-			JButton btnAdmin = new JButton("Adminbereich");
-			btnAdmin.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-					Adminbereich adminbereich = new Adminbereich(user);
-					frmHauptmenue.dispose();
+		JButton btnZitateAnzeigen = new JButton("Zitate anzeigen");
+		btnZitateAnzeigen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					model = (DefaultTableModel) table.getModel();
+					if (model.getRowCount() > 0) {
+					    for (int i = model.getRowCount() - 1; i > -1; i--) {
+					        model.removeRow(i);
+					    }
+					}
+					Statement myStmt = connection.getConnection().createStatement();
+					ResultSet myRs = myStmt.executeQuery("SELECT z.ID, Zitat, u.Vorname, u.Nachname, k.Kurs, c.Klasse FROM zitatedb.tblzitate as z\r\n" + 
+						       "JOIN tbluser as u on u.ID = z.SprecherID\r\n" + 
+						       "JOIN tblKurs as k on z.KursID = k.ID\r\n" +
+						       "JOIN tblklassen as c ON z.KlasseID = c.ID");
+					while(myRs.next()) {
+						model.addRow(new Object[] {myRs.getString("ID"), myRs.getString("Zitat"), myRs.getString("Vorname") + " " + myRs.getString("Nachname"), myRs.getString("Kurs"), myRs.getString("Klasse")});
+					}
+					
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-			});
-			btnAdmin.setToolTipText("Adminbereich");
-			btnAdmin.setBounds(183, 503, 105, 23);
-			frmHauptmenue.getContentPane().add(btnAdmin);
-		}
-=======
+			}
+		});
+		btnZitateAnzeigen.setBounds(20, 127, 119, 23);
+		frmHauptmenue.getContentPane().add(btnZitateAnzeigen);
+		
 		table = new JTable();
+		table.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				int selectedRowIndex = table.getSelectedRow();
+			zitatID = Integer.parseInt(model.getValueAt(selectedRowIndex , 0).toString());
+			//System.out.println(zitatID);
+			}
+		});
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table.setModel(new DefaultTableModel(
 			new Object[][] {
@@ -195,36 +225,44 @@ public class ZitatAnzeige {
 		table.getColumnModel().getColumn(1).setPreferredWidth(90);
 		table.getColumnModel().getColumn(2).setPreferredWidth(90);
 		table.getColumnModel().getColumn(4).setPreferredWidth(50);
+		//table.setBounds(20, 162, 431, 268);
+		//frmHauptmenue.getContentPane().add(table);
 		
-		JScrollBar scrollBar = new JScrollBar();
-		scrollBar.setBounds(434, 161, 17, 268);
-		frmHauptmenue.getContentPane().add(scrollBar);
-		table.setBounds(20, 162, 431, 268);
-		frmHauptmenue.getContentPane().add(table);
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(20, 162, 431, 268);
+		frmHauptmenue.getContentPane().add(scrollPane);
 		
-		JButton btnZitateAnzeigen = new JButton("Zitate anzeigen");
-		btnZitateAnzeigen.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				try {
-					DefaultTableModel model = (DefaultTableModel) table.getModel();
-					Statement myStmt = connection.getConnection().createStatement();
-					ResultSet myRs = myStmt.executeQuery("SELECT z.ID, Zitat, u.Vorname, u.Nachname, k.Kurs, c.Klasse FROM zitatedb.tblzitate as z\r\n" + 
-						       "JOIN tbluser as u on u.ID = z.SprecherID\r\n" + 
-						       "JOIN tblKurs as k on z.KursID = k.ID\r\n" +
-						       "JOIN tblklassen as c ON z.KlasseID = c.ID");
-					while(myRs.next()) {
-						model.addRow(new Object[] {myRs.getString("ID"), myRs.getString("Zitat"), myRs.getString("Vorname") + " " + myRs.getString("Nachname"), myRs.getString("Kurs"), myRs.getString("Klasse")});
-					}
-					
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+		scrollPane.setViewportView(table);
+		
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			Document doc = new Document(PageSize.A4);
+			try
+			{
+				PdfWriter writer = PdfWriter.getInstance(doc, new FileOutputStream("table.pdf"));
+				doc.open();
+				
+				PdfContentByte cByte = writer.getDirectContent();
+				cByte.saveState();
+				
+				Graphics2D g2 = cByte.createGraphicsShapes(500, 500);
+				Shape oldClip = g2.getClip();
+				
+				g2.clearRect(0, 0, 500, 500);
+				scrollPane.print(g2);
+				g2.setClip(oldClip);
+				g2.dispose();
+				cByte.restoreState();	
+				System.out.println("yay");
+			}
+			catch (Exception f) {
+			      System.err.println(f.getMessage());
+			      System.out.println("Fehler");
+			    }
+			doc.close();
+			
 			}
 		});
-		btnZitateAnzeigen.setBounds(20, 127, 119, 23);
-		frmHauptmenue.getContentPane().add(btnZitateAnzeigen);
->>>>>>> fd42149b539749ad0f4f810c8c6dd8779ea3c637
 		
 		frmHauptmenue.addWindowListener(new WindowAdapter() {
 			

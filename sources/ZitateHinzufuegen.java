@@ -74,7 +74,7 @@ public class ZitateHinzufuegen {
 		cbClass.setEditable(true);
 		cbClass.setBounds(171, 73, 98, 20);
 		frame.getContentPane().add(cbClass);
-				
+		
 		JComboBox<String> cbTeacher = new JComboBox<String>();
 		cbTeacher.setEditable(true);
 		cbTeacher.setBounds(279, 73, 98, 20);
@@ -166,6 +166,7 @@ public class ZitateHinzufuegen {
 					
 					System.out.println("SpeakerID: " + speakerID + " SubjectID: " + subjectID + " ClassID: " + classID + " TeacherID: " + teacherID + " Quote: " + inputQuote);
 					if(speakerID == -1 || subjectID == -1 || classID == -1 || teacherID == -1 || inputQuote.equals("")) {
+						// --- FIX ME --- Add Error message to logfield
 							builder.append("Bitte füllen Sie alle Felder aus.");
 					}
 					else {
