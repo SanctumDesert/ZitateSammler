@@ -1,0 +1,9 @@
+/BinaryStreamValueFactoryTest.class
+/CommonAsserts.class
+/FloatingPointBoundsEnforcerTest.class
+/IntegerBoundsEnforcerTest.class
+/LocalDateTimeValueFactoryTest.class
+/LocalTimeValueFactoryTest.class
+/SqlTimestampValueFactoryTest.class
+/StringConverterTest.class
+/ZeroDateTimeToNullValueFactoryTest.class

@@ -1,6 +1,8 @@
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
+
 import javax.swing.JFrame;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -9,17 +11,38 @@ import javax.swing.JList;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.ActionListener;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.ListSelectionModel;
+import javax.swing.ScrollPaneLayout;
 import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+//import com.lowagie.text.Document;
+//import com.lowagie.text.PageSize;
+//import com.lowagie.text.pdf.PdfContentByte;
+//import com.lowagie.text.pdf.PdfWriter;
+import java.io.IOException;
+import java.awt.BorderLayout;
+import java.awt.Graphics2D;
+import java.awt.Shape;
+import java.io.FileOutputStream;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 public class ZitatAnzeige {
 
 	private JFrame frmHauptmenue;
 	private JTable table;
-
+	private int zitatID;
+	DefaultTableModel model;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -54,28 +77,25 @@ public class ZitatAnzeige {
 		Connect connection = new Connect();
 		
 		frmHauptmenue.setTitle("Hauptmen\u00FC");
-		frmHauptmenue.setBounds(100, 100, 511, 608);
+		frmHauptmenue.setBounds(100, 100, 492, 651);
 		frmHauptmenue.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmHauptmenue.getContentPane().setLayout(null);
 		frmHauptmenue.setVisible(true);
 		
 		JComboBox<String> cbSubject = new JComboBox<String>();
-		cbSubject.setEditable(true);
 		cbSubject.setBounds(20, 68, 98, 20);
 		frmHauptmenue.getContentPane().add(cbSubject);
 		
 		JComboBox<String> cbClass = new JComboBox<String>();
-		cbClass.setEditable(true);
 		cbClass.setBounds(128, 68, 98, 20);
 		frmHauptmenue.getContentPane().add(cbClass);
 		
 		JComboBox<String> cbTeacher = new JComboBox<String>();
-		cbTeacher.setEditable(true);
 		cbTeacher.setBounds(236, 68, 98, 20);
 		frmHauptmenue.getContentPane().add(cbTeacher);
 		
 		JLabel lblZitateSuchen = new JLabel("Zitate suchen:");
-		lblZitateSuchen.setBounds(20, 30, 162, 14);
+		lblZitateSuchen.setBounds(20, 30, 70, 14);
 		frmHauptmenue.getContentPane().add(lblZitateSuchen);
 		
 		JLabel lblKurs = new JLabel("Kurs");
@@ -90,14 +110,22 @@ public class ZitatAnzeige {
 		lblLehrer.setBounds(236, 53, 70, 14);
 		frmHauptmenue.getContentPane().add(lblLehrer);
 		
+		
+		
 		JButton btnZitatLschen = new JButton("Zitat l\u00F6schen");
 		btnZitatLschen.setToolTipText("Zitat l\u00F6schen");
-		btnZitatLschen.setBounds(20, 441, 105, 23);
+		btnZitatLschen.setBounds(20, 441, 119, 25);
 		frmHauptmenue.getContentPane().add(btnZitatLschen);
 		
 		JButton btnZitatndern = new JButton("Zitat \u00E4ndern");
 		btnZitatndern.setToolTipText("Zitat \u00E4ndern");
-		btnZitatndern.setBounds(346, 441, 105, 23);
+		btnZitatndern.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				frmHauptmenue.dispose();
+				ZitatAendern changeQuote = new ZitatAendern(user, zitatID);
+			}
+		});
+		btnZitatndern.setBounds(332, 441, 119, 25);
 		frmHauptmenue.getContentPane().add(btnZitatndern);
 		
 		JButton btnSchliessen = new JButton("Schliessen");
@@ -107,12 +135,12 @@ public class ZitatAnzeige {
 				frmHauptmenue.dispose();
 			}
 		});
-		btnSchliessen.setBounds(346, 502, 105, 23);
+		btnSchliessen.setBounds(346, 502, 105, 25);
 		frmHauptmenue.getContentPane().add(btnSchliessen);
 		
 		JButton btnNichtSchliessen = new JButton("Account");
 		btnNichtSchliessen.setToolTipText("Account");
-		btnNichtSchliessen.setBounds(20, 502, 105, 23);
+		btnNichtSchliessen.setBounds(20, 502, 105, 25);
 		frmHauptmenue.getContentPane().add(btnNichtSchliessen);
 		
 		JButton btnZitateHinzufgen = new JButton("Zitat Hinzuf\u00FCgen");
@@ -126,16 +154,15 @@ public class ZitatAnzeige {
 				
 			}
 		});
-		btnZitateHinzufgen.setBounds(332, 127, 119, 23);
+		btnZitateHinzufgen.setBounds(332, 127, 119, 25);
 		frmHauptmenue.getContentPane().add(btnZitateHinzufgen);
 		
-		JButton btnNewButton = new JButton("Export");
-		btnNewButton.setToolTipText("Export");
-		btnNewButton.setBounds(183, 441, 105, 23);
-		frmHauptmenue.getContentPane().add(btnNewButton);
+		JButton btnExport = new JButton("Export");
+		btnExport.setToolTipText("Export");
+		btnExport.setBounds(183, 441, 105, 25);
+		frmHauptmenue.getContentPane().add(btnExport);
 		
 		JComboBox<String> cbSpeaker = new JComboBox<String>();
-		cbSpeaker.setEditable(true);
 		cbSpeaker.setBounds(353, 68, 98, 20);
 		frmHauptmenue.getContentPane().add(cbSpeaker);
 		
@@ -152,20 +179,106 @@ public class ZitatAnzeige {
 				}
 			});
 			btnAdmin.setToolTipText("Adminbereich");
-			btnAdmin.setBounds(183, 503, 105, 23);
+			btnAdmin.setBounds(183, 556, 105, 25);
 			frmHauptmenue.getContentPane().add(btnAdmin);
 		}
+		
+		JButton btnZitateAnzeigen = new JButton("Zitate anzeigen");
+		btnZitateAnzeigen.setToolTipText("Zitat anzeigen");
+		btnZitateAnzeigen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					boolean firstFilter = true;
+					model = (DefaultTableModel) table.getModel();
+					if (model.getRowCount() > 0) {
+					    for (int i = model.getRowCount() - 1; i > -1; i--) {
+					        model.removeRow(i);
+					    }
+					}
+					String qry = "SELECT z.ID, Zitat, u.Vorname, u.Nachname, k.Kurs, c.Klasse, t.name as Lehrer FROM zitatedb.tblzitate as z\r\n" + 
+						       "JOIN tbluser as u on u.ID = z.SprecherID\r\n" + 
+						       "JOIN tblKurs as k on z.KursID = k.ID\r\n" +
+						       "JOIN tbllehrer as t on z.lehrerid = t.ID\r\n" +
+						       "JOIN tblklassen as c ON z.KlasseID = c.ID";
+					if(cbSubject.getSelectedIndex() > 0)
+					{
+						if(firstFilter)
+						{
+							firstFilter = false;
+							qry += " WHERE k.Kurs = '" + cbSubject.getSelectedItem().toString() + "'";
+						}
+					}
+					if(cbClass.getSelectedIndex() > 0)
+					{
+						if(firstFilter)
+						{
+							firstFilter = false;
+							qry += " WHERE c.Klasse = '" + cbClass.getSelectedItem().toString() + "'";
+						}
+						else
+						{
+							qry += " AND c.Klasse = '" + cbClass.getSelectedItem().toString() + "'";
+						}
+					}
+					if(cbTeacher.getSelectedIndex() > 0)
+					{
+						if(firstFilter)
+						{
+							firstFilter = false;
+							qry += " WHERE t.name = '" + cbTeacher.getSelectedItem().toString() + "'";
+						}
+						else
+						{
+							qry += " AND t.name = '" + cbTeacher.getSelectedItem().toString() + "'";
+						}
+					}
+					if(cbSpeaker.getSelectedIndex() > 0)
+					{
+						if(firstFilter)
+						{
+							firstFilter = false;
+							qry += " WHERE z.SprecherID = (SELECT ID FROM tbluser WHERE Nutzername = '" + cbSpeaker.getSelectedItem().toString() + "')";
+						}
+						else
+						{
+							qry += " AND z.SprecherID = (SELECT ID FROM tbluser WHERE Nutzername = '" + cbSpeaker.getSelectedItem().toString() + "')";
+						}
+					}
+					System.out.println(qry);
+					Statement myStmt = connection.getConnection().createStatement();
+					ResultSet myRs = myStmt.executeQuery(qry);
+					while(myRs.next()) {
+						model.addRow(new Object[] {myRs.getString("ID"), myRs.getString("Zitat"), myRs.getString("Vorname") + " " + myRs.getString("Nachname"), myRs.getString("Kurs"), myRs.getString("Lehrer"),  myRs.getString("Klasse")});
+						
+					}
+					
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+		btnZitateAnzeigen.setBounds(20, 127, 119, 25);
+		frmHauptmenue.getContentPane().add(btnZitateAnzeigen);
+		
 		table = new JTable();
+		table.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				int selectedRowIndex = table.getSelectedRow();
+				zitatID = Integer.parseInt(model.getValueAt(selectedRowIndex , 0).toString());
+			}
+		});
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table.setModel(new DefaultTableModel(
 			new Object[][] {
 			},
 			new String[] {
-				"ID", "Zitat", "Sprecher", "Kurs", "Klasse"
+				"ID", "Zitat", "Sprecher", "Kurs", "Lehrer", "Klasse"
 			}
 		) {
 			Class[] columnTypes = new Class[] {
-				Integer.class, Object.class, String.class, String.class, Object.class
+				Integer.class, Object.class, String.class, String.class, String.class, Object.class
 			};
 			public Class getColumnClass(int columnIndex) {
 				return columnTypes[columnIndex];
@@ -182,34 +295,30 @@ public class ZitatAnzeige {
 		table.getColumnModel().getColumn(2).setPreferredWidth(90);
 		table.getColumnModel().getColumn(4).setPreferredWidth(50);
 		
-		JScrollBar scrollBar = new JScrollBar();
-		scrollBar.setBounds(434, 161, 17, 268);
-		frmHauptmenue.getContentPane().add(scrollBar);
-		table.setBounds(20, 162, 431, 268);
-		frmHauptmenue.getContentPane().add(table);
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(20, 162, 431, 268);
+		frmHauptmenue.getContentPane().add(scrollPane);
 		
-		JButton btnZitateAnzeigen = new JButton("Zitate anzeigen");
-		btnZitateAnzeigen.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				try {
-					DefaultTableModel model = (DefaultTableModel) table.getModel();
-					Statement myStmt = connection.getConnection().createStatement();
-					ResultSet myRs = myStmt.executeQuery("SELECT z.ID, Zitat, u.Vorname, u.Nachname, k.Kurs, c.Klasse FROM zitatedb.tblzitate as z\r\n" + 
-						       "JOIN tbluser as u on u.ID = z.SprecherID\r\n" + 
-						       "JOIN tblKurs as k on z.KursID = k.ID\r\n" +
-						       "JOIN tblklassen as c ON z.KlasseID = c.ID");
-					while(myRs.next()) {
-						model.addRow(new Object[] {myRs.getString("ID"), myRs.getString("Zitat"), myRs.getString("Vorname") + " " + myRs.getString("Nachname"), myRs.getString("Kurs"), myRs.getString("Klasse")});
+		scrollPane.setViewportView(table);
+		
+		JComboBox cbFormat = new JComboBox();
+		cbFormat.setBounds(183, 500, 105, 26);
+		frmHauptmenue.getContentPane().add(cbFormat);
+		
+		btnExport.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(cbFormat.getSelectedIndex() > -1) {
+					if(cbFormat.getSelectedItem().toString().equals("Text")) {
+						if(model.getRowCount() > 0) {
+							exportToText();
+						}
 					}
-					
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					else if(cbFormat.getSelectedItem().toString().equals("CSV")) {
+						exportToCSV();
+					}
 				}
 			}
 		});
-		btnZitateAnzeigen.setBounds(20, 127, 119, 23);
-		frmHauptmenue.getContentPane().add(btnZitateAnzeigen);
 		
 		frmHauptmenue.addWindowListener(new WindowAdapter() {
 			
@@ -218,21 +327,33 @@ public class ZitatAnzeige {
 				try {
 					Statement myStmt = connection.getConnection().createStatement();
 					ResultSet myRs = myStmt.executeQuery("SELECT Klasse FROM tblklassen");
+					cbClass.addItem("");
 					while(myRs.next()) {
 						cbClass.addItem(myRs.getString("Klasse"));
 					}
 					myRs = myStmt.executeQuery("SELECT Kurs FROM tblkurs");
+					cbSubject.addItem("");
 					while(myRs.next()) {
 						cbSubject.addItem(myRs.getString("Kurs"));
 					}
-					myRs = myStmt.executeQuery("SELECT DISTINCT Name FROM tbllehrer");
+					myRs = myStmt.executeQuery("SELECT DISTINCT name FROM tbllehrer");
+					cbTeacher.addItem("");
 					while(myRs.next()) {
-						cbTeacher.addItem(myRs.getString("Name"));
+						cbTeacher.addItem(myRs.getString("name"));
 					}
-					cbSubject.setSelectedIndex(-1);
-					cbClass.setSelectedIndex(-1);
-					cbTeacher.setSelectedIndex(-1);
-					cbSpeaker.setSelectedIndex(-1);
+					myRs = myStmt.executeQuery("SELECT nutzername FROM tbluser");
+					cbSpeaker.addItem("");
+					while(myRs.next()) {
+						cbSpeaker.addItem(myRs.getString("nutzername"));
+					}
+					cbFormat.addItem("Text");
+					cbFormat.addItem("CSV");
+					cbFormat.setSelectedIndex(0);
+					
+					cbSubject.setSelectedIndex(0);
+					cbClass.setSelectedIndex(0);
+					cbTeacher.setSelectedIndex(0);
+					cbSpeaker.setSelectedIndex(0);
 				}
 				catch(Exception e){
 					System.out.println(e);
@@ -240,6 +361,35 @@ public class ZitatAnzeige {
 
 			}
 		});
+		
+		
 
+		frmHauptmenue.addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentResized(ComponentEvent arg0) {
+				scrollPane.setSize(frmHauptmenue.getWidth()-60, scrollPane.getHeight());
+			}
+		});
+	}
+	
+	public void exportToText() {
+		try {
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
+			String fileName = "ZitatExport" + dateFormat.format(System.currentTimeMillis()) + ".txt";
+			
+			FileWriter file = new FileWriter(new File(System.getProperty("user.home") + "/Desktop/" + fileName));
+			System.out.println(model.getRowCount());
+			for(int i = 0; i < model.getRowCount(); i++) {
+				file.append("\"" + model.getValueAt(i, 1) + "\" gesprochen von " + model.getValueAt(i, 2) + System.getProperty("line.separator"));
+			}
+			file.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void exportToCSV() {
+		
 	}
 }

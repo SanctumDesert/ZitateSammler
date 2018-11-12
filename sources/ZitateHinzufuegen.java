@@ -164,7 +164,6 @@ public class ZitateHinzufuegen {
 					int teacherID = -1;
 					if(result.next()) teacherID = result.getInt(1);
 					
-					System.out.println("SpeakerID: " + speakerID + " SubjectID: " + subjectID + " ClassID: " + classID + " TeacherID: " + teacherID + " Quote: " + inputQuote);
 					if(speakerID == -1 || subjectID == -1 || classID == -1 || teacherID == -1 || inputQuote.equals("")) {
 							builder.append("Bitte füllen Sie alle Felder aus.");
 					}

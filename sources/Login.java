@@ -18,7 +18,7 @@ import javax.swing.JPasswordField;
 
 import javax.xml.bind.DatatypeConverter;
 
-import com.sun.glass.ui.Application;
+//import com.sun.glass.ui.Application;
 import javax.swing.JTextArea;
 import java.awt.Color;
 import java.awt.SystemColor;
