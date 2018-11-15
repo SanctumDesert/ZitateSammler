@@ -1,3 +1,4 @@
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -7,32 +8,19 @@ import javax.swing.JFrame;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JButton;
-import javax.swing.JList;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.ActionListener;
-import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.ListSelectionModel;
-import javax.swing.ScrollPaneLayout;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
-//import com.lowagie.text.Document;
-//import com.lowagie.text.PageSize;
-//import com.lowagie.text.pdf.PdfContentByte;
-//import com.lowagie.text.pdf.PdfWriter;
 import java.io.IOException;
-import java.awt.BorderLayout;
-import java.awt.Graphics2D;
-import java.awt.Shape;
-import java.io.FileOutputStream;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
@@ -40,37 +28,14 @@ public class ZitatAnzeige {
 
 	private JFrame frmHauptmenue;
 	private JTable table;
-	private int zitatID;
+	private int zitatID = -1;
 	DefaultTableModel model;
 	
-	/**
-	 * Launch the application.
-	 */
-	/*
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					ZitatAnzeige window = new ZitatAnzeige();
-					window.frmHauptmenue.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-	*/
-
-	/**
-	 * Create the application.
-	 */
 	public ZitatAnzeige(User user) {
 		initialize(user);
 	}
 
-	/**
-	 * Initialize the contents of the frame.
-	 */
+	@SuppressWarnings("serial")
 	private void initialize(User user) {
 		frmHauptmenue = new JFrame();
 		
@@ -113,6 +78,26 @@ public class ZitatAnzeige {
 		
 		
 		JButton btnZitatLschen = new JButton("Zitat l\u00F6schen");
+		btnZitatLschen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(zitatID != -1) {
+					try {
+						PreparedStatement getUserID = connection.getConnection().prepareStatement("SELECT urheberid FROM tblZitate WHERE id = ?");
+						getUserID.setInt(1, zitatID);
+						ResultSet myRs = getUserID.executeQuery();
+						if(myRs.next()) {
+							if(myRs.getInt(1) == user.ID || user.admin) {
+								PreparedStatement deleteQuote = connection.getConnection().prepareStatement("UPDATE tblZitate SET deleted = true WHERE id = ?");
+								deleteQuote.setInt(1, zitatID);
+								deleteQuote.executeUpdate();
+							}
+						}
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		});
 		btnZitatLschen.setToolTipText("Zitat l\u00F6schen");
 		btnZitatLschen.setBounds(20, 441, 119, 25);
 		frmHauptmenue.getContentPane().add(btnZitatLschen);
@@ -121,8 +106,21 @@ public class ZitatAnzeige {
 		btnZitatndern.setToolTipText("Zitat \u00E4ndern");
 		btnZitatndern.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				frmHauptmenue.dispose();
-				ZitatAendern changeQuote = new ZitatAendern(user, zitatID);
+				if(zitatID != -1) {
+					try {
+						PreparedStatement getUserID = connection.getConnection().prepareStatement("SELECT urheberid FROM tblZitate WHERE id = ?");
+						getUserID.setInt(1, zitatID);
+						ResultSet myRs = getUserID.executeQuery();
+						if(myRs.next()) {
+							if(myRs.getInt(1) == user.ID || user.admin) {
+								frmHauptmenue.dispose();
+								new ZitatAendern(user, zitatID);
+							}
+						}
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+				}
 			}
 		});
 		btnZitatndern.setBounds(332, 441, 119, 25);
@@ -147,10 +145,8 @@ public class ZitatAnzeige {
 		btnZitateHinzufgen.setToolTipText("Zitat Hinzuf\u00FCgen");
 		btnZitateHinzufgen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				//frmHauptmenue.setVisible(false);
 				frmHauptmenue.dispose();
-				@SuppressWarnings("unused")
-				ZitateHinzufuegen addZitat = new ZitateHinzufuegen(user);
+				new ZitateHinzufuegen(user);
 				
 			}
 		});
@@ -174,7 +170,7 @@ public class ZitatAnzeige {
 			JButton btnAdmin = new JButton("Adminbereich");
 			btnAdmin.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					Adminbereich adminbereich = new Adminbereich(user);
+					new Adminbereich(user);
 					frmHauptmenue.dispose();
 				}
 			});
@@ -199,57 +195,27 @@ public class ZitatAnzeige {
 						       "JOIN tbluser as u on u.ID = z.SprecherID\r\n" + 
 						       "JOIN tblKurs as k on z.KursID = k.ID\r\n" +
 						       "JOIN tbllehrer as t on z.lehrerid = t.ID\r\n" +
-						       "JOIN tblklassen as c ON z.KlasseID = c.ID";
+						       "JOIN tblklassen as c ON z.KlasseID = c.ID WHERE z.deleted = false";
 					if(cbSubject.getSelectedIndex() > 0)
 					{
-						if(firstFilter)
-						{
-							firstFilter = false;
-							qry += " WHERE k.Kurs = '" + cbSubject.getSelectedItem().toString() + "'";
-						}
+						qry += " AND k.Kurs = '" + cbSubject.getSelectedItem().toString() + "'";
 					}
 					if(cbClass.getSelectedIndex() > 0)
 					{
-						if(firstFilter)
-						{
-							firstFilter = false;
-							qry += " WHERE c.Klasse = '" + cbClass.getSelectedItem().toString() + "'";
-						}
-						else
-						{
-							qry += " AND c.Klasse = '" + cbClass.getSelectedItem().toString() + "'";
-						}
+						qry += " AND c.Klasse = '" + cbClass.getSelectedItem().toString() + "'";
 					}
 					if(cbTeacher.getSelectedIndex() > 0)
 					{
-						if(firstFilter)
-						{
-							firstFilter = false;
-							qry += " WHERE t.name = '" + cbTeacher.getSelectedItem().toString() + "'";
-						}
-						else
-						{
-							qry += " AND t.name = '" + cbTeacher.getSelectedItem().toString() + "'";
-						}
+						qry += " AND t.name = '" + cbTeacher.getSelectedItem().toString() + "'";
 					}
 					if(cbSpeaker.getSelectedIndex() > 0)
 					{
-						if(firstFilter)
-						{
-							firstFilter = false;
-							qry += " WHERE z.SprecherID = (SELECT ID FROM tbluser WHERE Nutzername = '" + cbSpeaker.getSelectedItem().toString() + "')";
-						}
-						else
-						{
-							qry += " AND z.SprecherID = (SELECT ID FROM tbluser WHERE Nutzername = '" + cbSpeaker.getSelectedItem().toString() + "')";
-						}
+						qry += " AND z.SprecherID = (SELECT ID FROM tbluser WHERE Nutzername = '" + cbSpeaker.getSelectedItem().toString() + "')";
 					}
-					System.out.println(qry);
 					Statement myStmt = connection.getConnection().createStatement();
 					ResultSet myRs = myStmt.executeQuery(qry);
 					while(myRs.next()) {
-						model.addRow(new Object[] {myRs.getString("ID"), myRs.getString("Zitat"), myRs.getString("Vorname") + " " + myRs.getString("Nachname"), myRs.getString("Kurs"), myRs.getString("Lehrer"),  myRs.getString("Klasse")});
-						
+						model.addRow(new Object[] {myRs.getString("ID"), myRs.getString("Zitat"), myRs.getString("Vorname") + " " + myRs.getString("Nachname"), myRs.getString("Kurs"), myRs.getString("Lehrer"),  myRs.getString("Klasse")});	
 					}
 					
 				} catch (SQLException e) {
@@ -277,9 +243,11 @@ public class ZitatAnzeige {
 				"ID", "Zitat", "Sprecher", "Kurs", "Lehrer", "Klasse"
 			}
 		) {
+			@SuppressWarnings("rawtypes")
 			Class[] columnTypes = new Class[] {
 				Integer.class, Object.class, String.class, String.class, String.class, Object.class
 			};
+			@SuppressWarnings({ "unchecked", "rawtypes" })
 			public Class getColumnClass(int columnIndex) {
 				return columnTypes[columnIndex];
 			}
@@ -301,7 +269,7 @@ public class ZitatAnzeige {
 		
 		scrollPane.setViewportView(table);
 		
-		JComboBox cbFormat = new JComboBox();
+		JComboBox<String> cbFormat = new JComboBox<String>();
 		cbFormat.setBounds(183, 500, 105, 26);
 		frmHauptmenue.getContentPane().add(cbFormat);
 		
@@ -390,6 +358,30 @@ public class ZitatAnzeige {
 	}
 	
 	public void exportToCSV() {
-		
+		try {
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
+			String fileName = "ZitatExport" + dateFormat.format(System.currentTimeMillis()) + ".csv";
+			FileWriter csv = new FileWriter(new File(System.getProperty("user.home") + "/Desktop/" + fileName));
+			
+			for(int i = 0; i < model.getColumnCount(); i++)
+			{
+				csv.write(model.getColumnName(i) + ";");
+			}
+			csv.write("\n");
+			
+			for (int i = 0; i < model.getRowCount(); i++) {
+	            for (int j = 0; j < model.getColumnCount(); j++) {
+	                csv.write(model.getValueAt(i, j).toString() + ";");
+	            }
+	            csv.write("\n");
+	        }
+	
+	        csv.close();
+	        System.out.println("created");
+		}
+		catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 	}
 }

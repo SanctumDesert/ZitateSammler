@@ -4,6 +4,9 @@ import javax.swing.JFrame;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
+
+import com.mysql.cj.protocol.Resultset;
+
 import javax.swing.JButton;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -59,22 +62,22 @@ public class Adminbereich {
 		
 		Connect connection = new Connect();
 		
-		frame.setBounds(100, 100, 658, 432);
+		frame.setBounds(100, 100, 658, 446);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		frame.setVisible(true);
 		
 		JComboBox cbUser = new JComboBox();
-		cbUser.setBounds(15, 311, 134, 20);
+		cbUser.setBounds(15, 354, 135, 25);
 		frame.getContentPane().add(cbUser);
 		
 		JLabel lblUser = new JLabel("User");
 		lblUser.setHorizontalAlignment(SwingConstants.LEFT);
-		lblUser.setBounds(15, 281, 46, 14);
+		lblUser.setBounds(15, 324, 106, 14);
 		frame.getContentPane().add(lblUser);
 		
 		JButton btnUserDelete = new JButton("User l\u00F6schen");
-		btnUserDelete.setBounds(164, 310, 134, 23);
+		btnUserDelete.setBounds(164, 353, 149, 25);
 		frame.getContentPane().add(btnUserDelete);
 		
 		JLabel lblFach = new JLabel("Fach");
@@ -90,25 +93,25 @@ public class Adminbereich {
 		frame.getContentPane().add(lblKlasse);
 		
 		JButton btnAddCourse = new JButton("Kurs Hinzuf\u00FCgen");
-		btnAddCourse.setBounds(164, 144, 159, 23);
+		btnAddCourse.setBounds(164, 144, 149, 25);
 		frame.getContentPane().add(btnAddCourse);
 		
 		JButton btnDone = new JButton("Fertig");
-		btnDone.setBounds(442, 304, 134, 35);
+		btnDone.setBounds(487, 344, 134, 35);
 		frame.getContentPane().add(btnDone);
 		
 		txtSubject = new JTextField();
-		txtSubject.setBounds(15, 70, 134, 26);
+		txtSubject.setBounds(15, 70, 134, 25);
 		frame.getContentPane().add(txtSubject);
 		txtSubject.setColumns(10);
 		
 		txtTeacher = new JTextField();
-		txtTeacher.setBounds(15, 142, 134, 26);
+		txtTeacher.setBounds(15, 142, 134, 25);
 		frame.getContentPane().add(txtTeacher);
 		txtTeacher.setColumns(10);
 		
 		txtClass = new JTextField();
-		txtClass.setBounds(15, 214, 134, 26);
+		txtClass.setBounds(15, 214, 134, 25);
 		frame.getContentPane().add(txtClass);
 		txtClass.setColumns(10);
 		
@@ -118,8 +121,106 @@ public class Adminbereich {
 		txtLogField.setForeground(new Color(255, 0, 0));
 		txtLogField.setBackground(SystemColor.menu);
 		txtLogField.setEditable(false);
-		txtLogField.setBounds(364, 16, 257, 271);
+		txtLogField.setBounds(372, 16, 249, 271);
 		frame.getContentPane().add(txtLogField);
+		
+		JLabel lblCourse = new JLabel("Kurs");
+		lblCourse.setBounds(15, 256, 134, 20);
+		frame.getContentPane().add(lblCourse);
+		
+		JComboBox cbCourse = new JComboBox();
+		cbCourse.setBounds(15, 281, 135, 25);
+		frame.getContentPane().add(cbCourse);
+		
+		JButton btnAddUserToCourse = new JButton("User zu Kurs hinzuf\u00FCgen");
+		btnAddUserToCourse.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(cbCourse.getSelectedIndex() != -1 && cbUser.getSelectedIndex() != -1) {
+					try {
+						PreparedStatement myStmt = connection.getConnection().prepareStatement("INSERT INTO user_kurs_map (kursid, userid)"
+																							 + "VALUES (?, ?)");
+						
+						PreparedStatement getCourseID = connection.getConnection().prepareStatement("SELECT id FROM tblkurs WHERE kurs = ?");
+						getCourseID.setString(1, cbCourse.getSelectedItem().toString());
+						ResultSet myRs = getCourseID.executeQuery();
+						myRs.next();
+						int courseID = myRs.getInt(1);
+						myStmt.setInt(1, courseID);
+						
+						PreparedStatement getUserID = connection.getConnection().prepareStatement("SELECT id FROM tbluser WHERE nutzername = ?");
+						getUserID.setString(1, cbUser.getSelectedItem().toString());
+						myRs = getUserID.executeQuery();
+						myRs.next();
+						int userID = myRs.getInt(1);
+						myStmt.setInt(2, userID);
+						
+						PreparedStatement isUserInCourse = connection.getConnection().prepareStatement("SELECT * FROM user_kurs_map WHERE userid = ? AND kursid = ?");
+						isUserInCourse.setInt(1, userID);
+						isUserInCourse.setInt(2, courseID);
+						myRs = isUserInCourse.executeQuery();
+						
+						if(!myRs.next()) {
+							myStmt.executeUpdate();
+							txtLogField.setText("User \"" + cbUser.getSelectedItem().toString() + "\" wurde erfolgreich zu Kurs \"" + cbCourse.getSelectedItem().toString() + "\" hinzugefügt.");
+						}
+						else {
+							txtLogField.setText("Dieser User ist bereits in diesem Kurs.");
+						}
+						
+						
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				else {
+					txtLogField.setText("Bitte wählen Sie sowohl einen Kurs, als auch einen Nutzer aus.");
+				}
+			}
+		});
+		btnAddUserToCourse.setBounds(164, 256, 205, 25);
+		frame.getContentPane().add(btnAddUserToCourse);
+		
+		JButton btnDeleteUserFromCourse = new JButton("User aus Kurs entfernen");
+		btnDeleteUserFromCourse.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					PreparedStatement getCourseID = connection.getConnection().prepareStatement("SELECT id FROM tblkurs WHERE kurs = ?");
+					getCourseID.setString(1, cbCourse.getSelectedItem().toString());
+					ResultSet myRs = getCourseID.executeQuery();
+					myRs.next();
+					int courseID = myRs.getInt(1);
+					
+					PreparedStatement getUserID = connection.getConnection().prepareStatement("SELECT id FROM tbluser WHERE nutzername = ?");
+					getUserID.setString(1, cbUser.getSelectedItem().toString());
+					myRs = getUserID.executeQuery();
+					myRs.next();
+					int userID = myRs.getInt(1);
+					
+					PreparedStatement isUserInCourse = connection.getConnection().prepareStatement("SELECT * FROM user_kurs_map WHERE userid = ? AND kursid = ?");
+					isUserInCourse.setInt(1, userID);
+					isUserInCourse.setInt(2, courseID);
+					myRs = isUserInCourse.executeQuery();
+					
+					if(myRs.next()) {
+						PreparedStatement deleteUser = connection.getConnection().prepareStatement("DELETE FROM user_kurs_map WHERE userid = ? AND kursid = ?");
+						deleteUser.setInt(1, userID);
+						deleteUser.setInt(2, courseID);
+						deleteUser.executeUpdate();
+						txtLogField.setText("Der User \"" + cbUser.getSelectedItem().toString() + "\" wurde aus dem Kurs \"" + cbCourse.getSelectedItem().toString() + "\" erfolgreich entfernt.");
+					}
+					else {
+						txtLogField.setText("Der User \"" + cbUser.getSelectedItem().toString() + "\" ist nicht im Kurs \"" + cbCourse.getSelectedItem().toString() + "\"  und kann somit nicht aus ihm entfernt werden.");
+					}
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+		});
+		btnDeleteUserFromCourse.setBounds(164, 297, 205, 25);
+		frame.getContentPane().add(btnDeleteUserFromCourse);
 		
 		btnUserDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -209,6 +310,13 @@ public class Adminbereich {
 					while(myRs.next()) {
 						cbUser.addItem(myRs.getString("nutzername"));
 					}
+					myRs = myStmt.executeQuery("SELECT kurs FROM tblkurs");
+					while(myRs.next()) {
+						cbCourse.addItem(myRs.getString("kurs"));
+					}
+					
+					cbUser.setSelectedIndex(-1);
+					cbCourse.setSelectedIndex(-1);
 				}
 				catch (SQLException e1) {
 					// TODO Auto-generated catch block
