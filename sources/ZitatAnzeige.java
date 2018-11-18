@@ -42,37 +42,37 @@ public class ZitatAnzeige {
 		Connect connection = new Connect();
 		
 		frmHauptmenue.setTitle("Hauptmen\u00FC");
-		frmHauptmenue.setBounds(100, 100, 492, 651);
+		frmHauptmenue.setBounds(100, 100, 510, 651);
 		frmHauptmenue.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmHauptmenue.getContentPane().setLayout(null);
 		frmHauptmenue.setVisible(true);
 		
 		JComboBox<String> cbSubject = new JComboBox<String>();
-		cbSubject.setBounds(20, 68, 98, 20);
+		cbSubject.setBounds(20, 80, 100, 20);
 		frmHauptmenue.getContentPane().add(cbSubject);
 		
 		JComboBox<String> cbClass = new JComboBox<String>();
-		cbClass.setBounds(128, 68, 98, 20);
+		cbClass.setBounds(128, 80, 100, 20);
 		frmHauptmenue.getContentPane().add(cbClass);
 		
 		JComboBox<String> cbTeacher = new JComboBox<String>();
-		cbTeacher.setBounds(236, 68, 98, 20);
+		cbTeacher.setBounds(236, 80, 100, 20);
 		frmHauptmenue.getContentPane().add(cbTeacher);
 		
-		JLabel lblZitateSuchen = new JLabel("Zitate suchen:");
-		lblZitateSuchen.setBounds(20, 30, 70, 14);
-		frmHauptmenue.getContentPane().add(lblZitateSuchen);
+		JLabel lblZitateFiltern = new JLabel("Zitate filtern:");
+		lblZitateFiltern.setBounds(20, 30, 120, 14);
+		frmHauptmenue.getContentPane().add(lblZitateFiltern);
 		
 		JLabel lblKurs = new JLabel("Kurs");
-		lblKurs.setBounds(20, 53, 70, 14);
+		lblKurs.setBounds(20, 60, 70, 14);
 		frmHauptmenue.getContentPane().add(lblKurs);
 		
 		JLabel lblKlasse = new JLabel("Klasse");
-		lblKlasse.setBounds(128, 53, 70, 14);
+		lblKlasse.setBounds(128, 60, 70, 14);
 		frmHauptmenue.getContentPane().add(lblKlasse);
 		
 		JLabel lblLehrer = new JLabel("Lehrer");
-		lblLehrer.setBounds(236, 53, 70, 14);
+		lblLehrer.setBounds(236, 60, 70, 14);
 		frmHauptmenue.getContentPane().add(lblLehrer);
 		
 		
@@ -82,6 +82,7 @@ public class ZitatAnzeige {
 			public void actionPerformed(ActionEvent arg0) {
 				if(zitatID != -1) {
 					try {
+						// Checks if the user is authorized to delete the quote
 						PreparedStatement getUserID = connection.getConnection().prepareStatement("SELECT urheberid FROM tblZitate WHERE id = ?");
 						getUserID.setInt(1, zitatID);
 						ResultSet myRs = getUserID.executeQuery();
@@ -99,7 +100,7 @@ public class ZitatAnzeige {
 			}
 		});
 		btnZitatLschen.setToolTipText("Zitat l\u00F6schen");
-		btnZitatLschen.setBounds(20, 441, 119, 25);
+		btnZitatLschen.setBounds(20, 441, 120, 25);
 		frmHauptmenue.getContentPane().add(btnZitatLschen);
 		
 		JButton btnZitatndern = new JButton("Zitat \u00E4ndern");
@@ -108,6 +109,7 @@ public class ZitatAnzeige {
 			public void actionPerformed(ActionEvent arg0) {
 				if(zitatID != -1) {
 					try {
+						// Checks if the user is authorized to change the quote
 						PreparedStatement getUserID = connection.getConnection().prepareStatement("SELECT urheberid FROM tblZitate WHERE id = ?");
 						getUserID.setInt(1, zitatID);
 						ResultSet myRs = getUserID.executeQuery();
@@ -123,7 +125,7 @@ public class ZitatAnzeige {
 				}
 			}
 		});
-		btnZitatndern.setBounds(332, 441, 119, 25);
+		btnZitatndern.setBounds(350, 441, 120, 25);
 		frmHauptmenue.getContentPane().add(btnZitatndern);
 		
 		JButton btnSchliessen = new JButton("Schliessen");
@@ -133,12 +135,18 @@ public class ZitatAnzeige {
 				frmHauptmenue.dispose();
 			}
 		});
-		btnSchliessen.setBounds(346, 502, 105, 25);
+		btnSchliessen.setBounds(350, 502, 120, 25);
 		frmHauptmenue.getContentPane().add(btnSchliessen);
 		
 		JButton btnNichtSchliessen = new JButton("Account");
+		btnNichtSchliessen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				new UserAendern(user);
+				frmHauptmenue.dispose();
+			}
+		});
 		btnNichtSchliessen.setToolTipText("Account");
-		btnNichtSchliessen.setBounds(20, 502, 105, 25);
+		btnNichtSchliessen.setBounds(20, 502, 120, 25);
 		frmHauptmenue.getContentPane().add(btnNichtSchliessen);
 		
 		JButton btnZitateHinzufgen = new JButton("Zitat Hinzuf\u00FCgen");
@@ -150,20 +158,20 @@ public class ZitatAnzeige {
 				
 			}
 		});
-		btnZitateHinzufgen.setBounds(332, 127, 119, 25);
+		btnZitateHinzufgen.setBounds(332, 127, 120, 25);
 		frmHauptmenue.getContentPane().add(btnZitateHinzufgen);
 		
 		JButton btnExport = new JButton("Export");
 		btnExport.setToolTipText("Export");
-		btnExport.setBounds(183, 441, 105, 25);
+		btnExport.setBounds(185, 441, 120, 25);
 		frmHauptmenue.getContentPane().add(btnExport);
 		
 		JComboBox<String> cbSpeaker = new JComboBox<String>();
-		cbSpeaker.setBounds(353, 68, 98, 20);
+		cbSpeaker.setBounds(351, 80, 100, 20);
 		frmHauptmenue.getContentPane().add(cbSpeaker);
 		
 		JLabel lblSprecher = new JLabel("Sprecher");
-		lblSprecher.setBounds(353, 53, 70, 14);
+		lblSprecher.setBounds(350, 60, 70, 14);
 		frmHauptmenue.getContentPane().add(lblSprecher);
 		
 		if(user.admin==true) {
@@ -184,15 +192,16 @@ public class ZitatAnzeige {
 		btnZitateAnzeigen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					boolean firstFilter = true;
 					model = (DefaultTableModel) table.getModel();
 					if (model.getRowCount() > 0) {
 					    for (int i = model.getRowCount() - 1; i > -1; i--) {
 					        model.removeRow(i);
 					    }
 					}
-					String qry = "SELECT z.ID, Zitat, u.Vorname, u.Nachname, k.Kurs, c.Klasse, t.name as Lehrer FROM zitatedb.tblzitate as z\r\n" + 
-						       "JOIN tbluser as u on u.ID = z.SprecherID\r\n" + 
+					// Fills the model and applies filters if there are any
+					String qry = "SELECT z.ID, Zitat, u.Vorname, u.Nachname, k.Kurs, c.Klasse, t.name as Lehrer, o.Vorname as OFirst, o.Nachname AS OLast FROM zitatedb.tblzitate as z\r\n" + 
+						       "JOIN tbluser as u on u.ID = z.SprecherID\r\n" +
+						       "JOIN tbluser as o on o.ID = z.UrheberID\r\n" + 
 						       "JOIN tblKurs as k on z.KursID = k.ID\r\n" +
 						       "JOIN tbllehrer as t on z.lehrerid = t.ID\r\n" +
 						       "JOIN tblklassen as c ON z.KlasseID = c.ID WHERE z.deleted = false";
@@ -215,16 +224,15 @@ public class ZitatAnzeige {
 					Statement myStmt = connection.getConnection().createStatement();
 					ResultSet myRs = myStmt.executeQuery(qry);
 					while(myRs.next()) {
-						model.addRow(new Object[] {myRs.getString("ID"), myRs.getString("Zitat"), myRs.getString("Vorname") + " " + myRs.getString("Nachname"), myRs.getString("Kurs"), myRs.getString("Lehrer"),  myRs.getString("Klasse")});	
+						model.addRow(new Object[] {myRs.getString("ID"), myRs.getString("Zitat"), myRs.getString("Vorname") + " " + myRs.getString("Nachname"), myRs.getString("Kurs"), myRs.getString("Lehrer"),  myRs.getString("Klasse"), myRs.getString("OFirst") + " - " + myRs.getString("OLast")});	
 					}
 					
 				} catch (SQLException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
 		});
-		btnZitateAnzeigen.setBounds(20, 127, 119, 25);
+		btnZitateAnzeigen.setBounds(20, 127, 120, 25);
 		frmHauptmenue.getContentPane().add(btnZitateAnzeigen);
 		
 		table = new JTable();
@@ -240,41 +248,44 @@ public class ZitatAnzeige {
 			new Object[][] {
 			},
 			new String[] {
-				"ID", "Zitat", "Sprecher", "Kurs", "Lehrer", "Klasse"
+				"ID", "Zitat", "Sprecher", "Kurs", "Lehrer", "Klasse", "Urheber"
 			}
 		) {
 			@SuppressWarnings("rawtypes")
 			Class[] columnTypes = new Class[] {
-				Integer.class, Object.class, String.class, String.class, String.class, Object.class
+				Integer.class, Object.class, String.class, String.class, String.class, Object.class, String.class
 			};
 			@SuppressWarnings({ "unchecked", "rawtypes" })
 			public Class getColumnClass(int columnIndex) {
 				return columnTypes[columnIndex];
 			}
 			boolean[] columnEditables = new boolean[] {
-				false, false, false, false, false
+				false, false, false, false, false, false, false
 			};
 			public boolean isCellEditable(int row, int column) {
-				return columnEditables[column];
+				return columnEditables[column];														
 			}
 		});
 		table.getColumnModel().getColumn(0).setPreferredWidth(40);
 		table.getColumnModel().getColumn(1).setPreferredWidth(90);
 		table.getColumnModel().getColumn(2).setPreferredWidth(90);
+		table.getColumnModel().getColumn(3).setPreferredWidth(90);
 		table.getColumnModel().getColumn(4).setPreferredWidth(50);
+		table.getColumnModel().getColumn(5).setPreferredWidth(90);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(20, 162, 431, 268);
+		scrollPane.setBounds(20, 162, 450, 268);
 		frmHauptmenue.getContentPane().add(scrollPane);
 		
 		scrollPane.setViewportView(table);
 		
 		JComboBox<String> cbFormat = new JComboBox<String>();
-		cbFormat.setBounds(183, 500, 105, 26);
+		cbFormat.setBounds(185, 500, 120, 25);
 		frmHauptmenue.getContentPane().add(cbFormat);
 		
 		btnExport.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				// Choses which file format will be exportet
 				if(cbFormat.getSelectedIndex() > -1) {
 					if(cbFormat.getSelectedItem().toString().equals("Text")) {
 						if(model.getRowCount() > 0) {
@@ -282,7 +293,9 @@ public class ZitatAnzeige {
 						}
 					}
 					else if(cbFormat.getSelectedItem().toString().equals("CSV")) {
-						exportToCSV();
+						if(model.getRowCount() > 0) {
+							exportToCSV();
+						}
 					}
 				}
 			}
@@ -352,7 +365,6 @@ public class ZitatAnzeige {
 			}
 			file.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -380,7 +392,6 @@ public class ZitatAnzeige {
 	        System.out.println("created");
 		}
 		catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 	}

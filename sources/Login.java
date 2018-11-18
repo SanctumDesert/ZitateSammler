@@ -2,11 +2,8 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JButton;
-import java.awt.BorderLayout;
 import javax.swing.JLabel;
 import java.awt.event.ActionListener;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.PreparedStatement;
@@ -18,14 +15,12 @@ import javax.swing.JPasswordField;
 
 import javax.xml.bind.DatatypeConverter;
 
-//import com.sun.glass.ui.Application;
 import javax.swing.JTextArea;
 import java.awt.Color;
 import java.awt.SystemColor;
 import java.awt.Font;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;;
 
 public class Login {
 
@@ -100,7 +95,7 @@ public class Login {
 		btnRegistration.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				frmLogin.dispose();
-				Registrieren registration = new Registrieren();
+				new Registrieren();
 			}
 		});
 		btnRegistration.setBounds(226, 182, 115, 23);
@@ -126,67 +121,58 @@ public class Login {
 		txtPassword = new JPasswordField();
 		txtPassword.addKeyListener(new KeyAdapter() {			
 			@Override
-			public void keyTyped(KeyEvent e) {
-				// TODO Auto-generated method stub
+			public void keyPressed(KeyEvent e) {
 				if(e.getKeyChar()==KeyEvent.VK_ENTER) {
 					Einloggen();
 				}
-			}
-			
-			
+			}	
 		});
 		txtPassword.setBounds(181, 77, 160, 22);
 		frmLogin.getContentPane().add(txtPassword);
-	
-	
-	
-}
-private void Einloggen()
-{
-	boolean error = false;
-	//Create connection to database
-	Connect connection = new Connect();
-	
-	//Get the input username and password
-	String username = txtUser.getText();
-
-	//Password is encrypted in the database. We have to encrypt input as well in order to compare
-	MessageDigest digest;
-	try {
-		digest = MessageDigest.getInstance("SHA-256");
-		String passwordInput= String.valueOf(txtPassword.getPassword());
-		digest.update(passwordInput.getBytes());
-		byte[] passwordArray = digest.digest();
-		
-		String test = new String(DatatypeConverter.printHexBinary(passwordArray).toLowerCase());
-		
-		//Check if user is valid
-		PreparedStatement myStmt;
-		try {
-			myStmt = connection.getConnection().prepareStatement("SELECT * FROM tbluser WHERE nutzername=? AND passwort=? AND deleted = 0");
-			myStmt.setString(1, username);
-			myStmt.setString(2, test);
-			ResultSet myRs = myStmt.executeQuery();
-			if(myRs.next()==true) {
-					System.out.println("Login erfolgreich.");
-					// Creates new user object
-					User user = new User(myRs.getInt(1), myRs.getString(3), myRs.getString(4), myRs.getString(5), myRs.getString(6), myRs.getString(7),myRs.getBoolean(8));
-					// Opens the main window
-					ZitatAnzeige zitateAnzeigen = new ZitatAnzeige(user);
-					// Closes the login frame
-					frmLogin.dispose();
-			}
-			else {
-				txtErrorMessages.setText("Nutzerdaten waren falsch.");
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	} catch (NoSuchAlgorithmException e1) {
-		// TODO Auto-generated catch block
-		e1.printStackTrace();
 	}
+	private void Einloggen()
+	{
+		//Create connection to database
+		Connect connection = new Connect();
+		
+		//Get the input username
+		String username = txtUser.getText();
+	
+		//Password is encrypted in the database. We have to encrypt input as well in order to compare
+		MessageDigest digest;
+		try {
+			digest = MessageDigest.getInstance("SHA-256");
+			String passwordInput= String.valueOf(txtPassword.getPassword());
+			digest.update(passwordInput.getBytes());
+			byte[] passwordArray = digest.digest();
+			
+			String test = new String(DatatypeConverter.printHexBinary(passwordArray).toLowerCase());
+			
+			//Check if user is valid
+			PreparedStatement myStmt;
+			try {
+				myStmt = connection.getConnection().prepareStatement("SELECT id, vorname, nachname, passwort, mail, nutzername, admin FROM tbluser WHERE nutzername=? AND passwort=? AND deleted = 0");
+				myStmt.setString(1, username);
+				myStmt.setString(2, test);
+				ResultSet myRs = myStmt.executeQuery();
+				if(myRs.next()==true) {
+						System.out.println("Login erfolgreich.");
+						// Creates new user object
+						User user = new User(myRs.getInt(1), myRs.getString(2), myRs.getString(3), myRs.getString(4), myRs.getString(5), myRs.getString(6),myRs.getBoolean(7));
+						// Opens the main window
+						new ZitatAnzeige(user);
+						// Closes the login frame
+						frmLogin.dispose();
+				}
+				else {
+					txtErrorMessages.setText("Nutzerdaten waren falsch.");
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			
+		} catch (NoSuchAlgorithmException e1) {
+			e1.printStackTrace();
+		}
 	}
 }

@@ -1,11 +1,7 @@
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
-
-import com.mysql.cj.protocol.Resultset;
 
 import javax.swing.JButton;
 import java.awt.event.WindowAdapter;
@@ -28,35 +24,10 @@ public class Adminbereich {
 	private JTextField txtTeacher;
 	private JTextField txtClass;
 
-	/**
-	 * Launch the application.
-	 */
-	/*
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Adminbereich window = new Adminbereich();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-	*/
-
-	/**
-	 * Create the application.
-	 * @param user 
-	 */
 	public Adminbereich(User user) {
 		initialize(user);
 	}
 
-	/**
-	 * Initialize the contents of the frame.
-	 */
 	private void initialize(User user) {
 		frame = new JFrame();
 		
@@ -67,7 +38,7 @@ public class Adminbereich {
 		frame.getContentPane().setLayout(null);
 		frame.setVisible(true);
 		
-		JComboBox cbUser = new JComboBox();
+		JComboBox<String> cbUser = new JComboBox<String>();
 		cbUser.setBounds(15, 354, 135, 25);
 		frame.getContentPane().add(cbUser);
 		
@@ -128,7 +99,7 @@ public class Adminbereich {
 		lblCourse.setBounds(15, 256, 134, 20);
 		frame.getContentPane().add(lblCourse);
 		
-		JComboBox cbCourse = new JComboBox();
+		JComboBox<String> cbCourse = new JComboBox<String>();
 		cbCourse.setBounds(15, 281, 135, 25);
 		frame.getContentPane().add(cbCourse);
 		
@@ -169,7 +140,6 @@ public class Adminbereich {
 						
 						
 					} catch (SQLException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -213,7 +183,6 @@ public class Adminbereich {
 						txtLogField.setText("Der User \"" + cbUser.getSelectedItem().toString() + "\" ist nicht im Kurs \"" + cbCourse.getSelectedItem().toString() + "\"  und kann somit nicht aus ihm entfernt werden.");
 					}
 				} catch (SQLException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				
@@ -234,7 +203,6 @@ public class Adminbereich {
 							myStmt.execute();
 							
 						} catch (SQLException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
@@ -245,7 +213,7 @@ public class Adminbereich {
 		btnDone.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				frame.dispose();
-				ZitatAnzeige zitatAnzeige = new ZitatAnzeige(user);
+				new ZitatAnzeige(user);
 			}
 		});
 		
@@ -293,7 +261,6 @@ public class Adminbereich {
 						
 						
 					} catch (SQLException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -319,7 +286,6 @@ public class Adminbereich {
 					cbCourse.setSelectedIndex(-1);
 				}
 				catch (SQLException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}

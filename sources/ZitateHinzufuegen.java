@@ -1,9 +1,6 @@
 import javax.swing.JFrame;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.xml.bind.DatatypeConverter;
-
-import com.sun.imageio.spi.InputStreamImageInputStreamSpi;
 
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
@@ -11,8 +8,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,34 +21,10 @@ public class ZitateHinzufuegen {
 
 	private JFrame frame;
 
-	/**
-	 * Launch the application.
-	 */
-//	public static void main(String[] args) {
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-//					ZitateHinzufuegen window = new ZitateHinzufuegen();
-//					window.frame.setVisible(true);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//	}
-
-	/**
-	 * Create the application.
-	 */
 	public ZitateHinzufuegen(User user) {
-		//ZitateHinzufuegen window = new ZitateHinzufuegen();
-		
 		initialize(user);
 	}
 
-	/**
-	 * Initialize the contents of the frame.
-	 */
 	private void initialize(User user) {
 	
 		frame = new JFrame();
@@ -197,7 +168,6 @@ public class ZitateHinzufuegen {
 					}
 				}
 				catch (SQLException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				txtErrorMessages.setText(builder.toString());
