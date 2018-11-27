@@ -19,9 +19,8 @@ import java.awt.event.ActionEvent;
 
 public class Adminbereich {
 
-	private JFrame frame;
+	private JFrame frmAdminbereich;
 	private JTextField txtSubject;
-	private JTextField txtTeacher;
 	private JTextField txtClass;
 
 	public Adminbereich(User user) {
@@ -29,61 +28,57 @@ public class Adminbereich {
 	}
 
 	private void initialize(User user) {
-		frame = new JFrame();
+		frmAdminbereich = new JFrame();
+		frmAdminbereich.setTitle("Adminbereich");
 		
 		Connect connection = new Connect();
 		
-		frame.setBounds(100, 100, 658, 446);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
-		frame.setVisible(true);
+		frmAdminbereich.setBounds(100, 100, 658, 446);
+		frmAdminbereich.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmAdminbereich.getContentPane().setLayout(null);
+		frmAdminbereich.setVisible(true);
 		
 		JComboBox<String> cbUser = new JComboBox<String>();
 		cbUser.setBounds(15, 354, 135, 25);
-		frame.getContentPane().add(cbUser);
+		frmAdminbereich.getContentPane().add(cbUser);
 		
 		JLabel lblUser = new JLabel("User");
 		lblUser.setHorizontalAlignment(SwingConstants.LEFT);
 		lblUser.setBounds(15, 324, 106, 14);
-		frame.getContentPane().add(lblUser);
+		frmAdminbereich.getContentPane().add(lblUser);
 		
 		JButton btnUserDelete = new JButton("User l\u00F6schen");
 		btnUserDelete.setBounds(164, 353, 149, 25);
-		frame.getContentPane().add(btnUserDelete);
+		frmAdminbereich.getContentPane().add(btnUserDelete);
 		
 		JLabel lblFach = new JLabel("Fach");
 		lblFach.setBounds(15, 48, 46, 14);
-		frame.getContentPane().add(lblFach);
+		frmAdminbereich.getContentPane().add(lblFach);
 		
 		JLabel lblLehrer = new JLabel("Lehrer");
 		lblLehrer.setBounds(15, 112, 46, 14);
-		frame.getContentPane().add(lblLehrer);
+		frmAdminbereich.getContentPane().add(lblLehrer);
 		
 		JLabel lblKlasse = new JLabel("Klasse");
 		lblKlasse.setBounds(15, 184, 46, 14);
-		frame.getContentPane().add(lblKlasse);
+		frmAdminbereich.getContentPane().add(lblKlasse);
 		
 		JButton btnAddCourse = new JButton("Kurs Hinzuf\u00FCgen");
 		btnAddCourse.setBounds(164, 144, 149, 25);
-		frame.getContentPane().add(btnAddCourse);
+		frmAdminbereich.getContentPane().add(btnAddCourse);
 		
 		JButton btnDone = new JButton("Fertig");
 		btnDone.setBounds(487, 344, 134, 35);
-		frame.getContentPane().add(btnDone);
+		frmAdminbereich.getContentPane().add(btnDone);
 		
 		txtSubject = new JTextField();
 		txtSubject.setBounds(15, 70, 134, 25);
-		frame.getContentPane().add(txtSubject);
+		frmAdminbereich.getContentPane().add(txtSubject);
 		txtSubject.setColumns(10);
-		
-		txtTeacher = new JTextField();
-		txtTeacher.setBounds(15, 142, 134, 25);
-		frame.getContentPane().add(txtTeacher);
-		txtTeacher.setColumns(10);
 		
 		txtClass = new JTextField();
 		txtClass.setBounds(15, 214, 134, 25);
-		frame.getContentPane().add(txtClass);
+		frmAdminbereich.getContentPane().add(txtClass);
 		txtClass.setColumns(10);
 		
 		JTextArea txtLogField = new JTextArea();
@@ -93,15 +88,19 @@ public class Adminbereich {
 		txtLogField.setBackground(SystemColor.menu);
 		txtLogField.setEditable(false);
 		txtLogField.setBounds(372, 16, 249, 271);
-		frame.getContentPane().add(txtLogField);
+		frmAdminbereich.getContentPane().add(txtLogField);
 		
 		JLabel lblCourse = new JLabel("Kurs");
 		lblCourse.setBounds(15, 256, 134, 20);
-		frame.getContentPane().add(lblCourse);
+		frmAdminbereich.getContentPane().add(lblCourse);
 		
 		JComboBox<String> cbCourse = new JComboBox<String>();
 		cbCourse.setBounds(15, 281, 135, 25);
-		frame.getContentPane().add(cbCourse);
+		frmAdminbereich.getContentPane().add(cbCourse);
+		
+		JComboBox<String> cbTeacher = new JComboBox();
+		cbTeacher.setBounds(15, 142, 135, 25);
+		frmAdminbereich.getContentPane().add(cbTeacher);
 		
 		JButton btnAddUserToCourse = new JButton("User zu Kurs hinzuf\u00FCgen");
 		btnAddUserToCourse.addActionListener(new ActionListener() {
@@ -149,7 +148,7 @@ public class Adminbereich {
 			}
 		});
 		btnAddUserToCourse.setBounds(164, 256, 205, 25);
-		frame.getContentPane().add(btnAddUserToCourse);
+		frmAdminbereich.getContentPane().add(btnAddUserToCourse);
 		
 		JButton btnDeleteUserFromCourse = new JButton("User aus Kurs entfernen");
 		btnDeleteUserFromCourse.addActionListener(new ActionListener() {
@@ -189,7 +188,7 @@ public class Adminbereich {
 			}
 		});
 		btnDeleteUserFromCourse.setBounds(164, 297, 205, 25);
-		frame.getContentPane().add(btnDeleteUserFromCourse);
+		frmAdminbereich.getContentPane().add(btnDeleteUserFromCourse);
 		
 		btnUserDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -212,14 +211,14 @@ public class Adminbereich {
 		
 		btnDone.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				frame.dispose();
+				frmAdminbereich.dispose();
 				new ZitatAnzeige(user);
 			}
 		});
 		
 		btnAddCourse.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if(txtClass.getText().equals("") || txtSubject.getText().equals("") || txtTeacher.getText().equals("")) {
+				if(txtClass.getText().equals("") || txtSubject.getText().equals("") || cbTeacher.getSelectedIndex() == -1) {
 					txtLogField.setText("Alle Felder müssen ausgefüllt sein.");
 				}
 				else {
@@ -230,8 +229,8 @@ public class Adminbereich {
 						myStmt.executeUpdate();
 						
 						myStmt = connection.getConnection().prepareStatement("INSERT INTO lehrer_kurs_map(lehrerid, kursid) VALUES(?, ?)");
-						PreparedStatement getTeacherID = connection.getConnection().prepareStatement("SELECT id FROM tbllehrer WHERE id = ?");
-						getTeacherID.setInt(1, Integer.parseInt(txtTeacher.getText()));
+						PreparedStatement getTeacherID = connection.getConnection().prepareStatement("SELECT id FROM tbllehrer WHERE name = ?");
+						getTeacherID.setString(1, cbTeacher.getSelectedItem().toString());
 						ResultSet myRs = getTeacherID.executeQuery();
 						int teacherID = 0;
 						while(myRs.next()) {
@@ -267,7 +266,7 @@ public class Adminbereich {
 			}
 		});
 		
-		frame.addWindowListener(new WindowAdapter() {
+		frmAdminbereich.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowOpened(WindowEvent e) {
 				Statement myStmt;
@@ -280,6 +279,11 @@ public class Adminbereich {
 					myRs = myStmt.executeQuery("SELECT kurs FROM tblkurs");
 					while(myRs.next()) {
 						cbCourse.addItem(myRs.getString("kurs"));
+					}
+					
+					myRs = myStmt.executeQuery("SELECT name FROM tbllehrer");
+					while(myRs.next()) {
+						cbTeacher.addItem(myRs.getString("name"));
 					}
 					
 					cbUser.setSelectedIndex(-1);

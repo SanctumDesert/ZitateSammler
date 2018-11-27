@@ -29,7 +29,7 @@ public class ZitatAnzeige {
 	private JFrame frmHauptmenue;
 	private JTable table;
 	private int zitatID = -1;
-	DefaultTableModel model;
+	DefaultTableModel model = new DefaultTableModel();
 	
 	public ZitatAnzeige(User user) {
 		initialize(user);
@@ -41,7 +41,7 @@ public class ZitatAnzeige {
 		
 		Connect connection = new Connect();
 		
-		frmHauptmenue.setTitle("Hauptmen\u00FC");
+		frmHauptmenue.setTitle("Zitatanzeige");
 		frmHauptmenue.setBounds(100, 100, 510, 651);
 		frmHauptmenue.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmHauptmenue.getContentPane().setLayout(null);
@@ -75,7 +75,9 @@ public class ZitatAnzeige {
 		lblLehrer.setBounds(236, 60, 70, 14);
 		frmHauptmenue.getContentPane().add(lblLehrer);
 		
-		
+		JComboBox<String> cbSpeaker = new JComboBox<String>();
+		cbSpeaker.setBounds(351, 80, 100, 20);
+		frmHauptmenue.getContentPane().add(cbSpeaker);
 		
 		JButton btnZitatLschen = new JButton("Zitat l\u00F6schen");
 		btnZitatLschen.addActionListener(new ActionListener() {
@@ -91,6 +93,47 @@ public class ZitatAnzeige {
 								PreparedStatement deleteQuote = connection.getConnection().prepareStatement("UPDATE tblZitate SET deleted = true WHERE id = ?");
 								deleteQuote.setInt(1, zitatID);
 								deleteQuote.executeUpdate();
+								
+								try {
+									model = (DefaultTableModel) table.getModel();
+									if (model.getRowCount() > 0) {
+									    for (int i = model.getRowCount() - 1; i > -1; i--) {
+									        model.removeRow(i);
+									    }
+									}
+									// Fills the model and applies filters if there are any
+									String qry = "SELECT z.ID, Zitat, u.Vorname, u.Nachname, k.Kurs, c.Klasse, t.name as Lehrer, o.nutzername AS Nutzername FROM zitatedb.tblzitate as z\r\n" + 
+										       "JOIN tbluser as u on u.ID = z.SprecherID\r\n" +
+										       "JOIN tbluser as o on o.ID = z.UrheberID\r\n" + 
+										       "JOIN tblKurs as k on z.KursID = k.ID\r\n" +
+										       "JOIN tbllehrer as t on z.lehrerid = t.ID\r\n" +
+										       "JOIN tblklassen as c ON z.KlasseID = c.ID WHERE z.deleted = false";
+									if(cbSubject.getSelectedIndex() > 0)
+									{
+										qry += " AND k.Kurs = '" + cbSubject.getSelectedItem().toString() + "'";
+									}
+									if(cbClass.getSelectedIndex() > 0)
+									{
+										qry += " AND c.Klasse = '" + cbClass.getSelectedItem().toString() + "'";
+									}
+									if(cbTeacher.getSelectedIndex() > 0)
+									{
+										qry += " AND t.name = '" + cbTeacher.getSelectedItem().toString() + "'";
+									}
+									if(cbSpeaker.getSelectedIndex() > 0)
+									{
+										qry += " AND z.SprecherID = (SELECT ID FROM tbluser WHERE Nutzername = '" + cbSpeaker.getSelectedItem().toString() + "')";
+									}
+									Statement myStmt = connection.getConnection().createStatement();
+									myRs = myStmt.executeQuery(qry);
+									while(myRs.next()) {
+										model.addRow(new Object[] {myRs.getString("ID"), myRs.getString("Zitat"), myRs.getString("Vorname") + " " + myRs.getString("Nachname"), myRs.getString("Kurs"), myRs.getString("Lehrer"),  myRs.getString("Klasse"), myRs.getString("Nutzername")});	
+									}
+									
+								} 
+								catch (SQLException e) {
+									e.printStackTrace();
+								}			
 							}
 						}
 					} catch (SQLException e) {
@@ -138,16 +181,16 @@ public class ZitatAnzeige {
 		btnSchliessen.setBounds(350, 502, 120, 25);
 		frmHauptmenue.getContentPane().add(btnSchliessen);
 		
-		JButton btnNichtSchliessen = new JButton("Account");
-		btnNichtSchliessen.addActionListener(new ActionListener() {
+		JButton btnAccount = new JButton("Account");
+		btnAccount.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				new UserAendern(user);
 				frmHauptmenue.dispose();
 			}
 		});
-		btnNichtSchliessen.setToolTipText("Account");
-		btnNichtSchliessen.setBounds(20, 502, 120, 25);
-		frmHauptmenue.getContentPane().add(btnNichtSchliessen);
+		btnAccount.setToolTipText("Account");
+		btnAccount.setBounds(20, 502, 120, 25);
+		frmHauptmenue.getContentPane().add(btnAccount);
 		
 		JButton btnZitateHinzufgen = new JButton("Zitat Hinzuf\u00FCgen");
 		btnZitateHinzufgen.setToolTipText("Zitat Hinzuf\u00FCgen");
@@ -165,10 +208,6 @@ public class ZitatAnzeige {
 		btnExport.setToolTipText("Export");
 		btnExport.setBounds(185, 441, 120, 25);
 		frmHauptmenue.getContentPane().add(btnExport);
-		
-		JComboBox<String> cbSpeaker = new JComboBox<String>();
-		cbSpeaker.setBounds(351, 80, 100, 20);
-		frmHauptmenue.getContentPane().add(cbSpeaker);
 		
 		JLabel lblSprecher = new JLabel("Sprecher");
 		lblSprecher.setBounds(350, 60, 70, 14);
@@ -199,7 +238,7 @@ public class ZitatAnzeige {
 					    }
 					}
 					// Fills the model and applies filters if there are any
-					String qry = "SELECT z.ID, Zitat, u.Vorname, u.Nachname, k.Kurs, c.Klasse, t.name as Lehrer, o.Vorname as OFirst, o.Nachname AS OLast FROM zitatedb.tblzitate as z\r\n" + 
+					String qry = "SELECT z.ID, Zitat, u.Vorname, u.Nachname, k.Kurs, c.Klasse, t.name as Lehrer, o.nutzername AS Nutzername FROM zitatedb.tblzitate as z\r\n" + 
 						       "JOIN tbluser as u on u.ID = z.SprecherID\r\n" +
 						       "JOIN tbluser as o on o.ID = z.UrheberID\r\n" + 
 						       "JOIN tblKurs as k on z.KursID = k.ID\r\n" +
@@ -224,7 +263,7 @@ public class ZitatAnzeige {
 					Statement myStmt = connection.getConnection().createStatement();
 					ResultSet myRs = myStmt.executeQuery(qry);
 					while(myRs.next()) {
-						model.addRow(new Object[] {myRs.getString("ID"), myRs.getString("Zitat"), myRs.getString("Vorname") + " " + myRs.getString("Nachname"), myRs.getString("Kurs"), myRs.getString("Lehrer"),  myRs.getString("Klasse"), myRs.getString("OFirst") + " - " + myRs.getString("OLast")});	
+						model.addRow(new Object[] {myRs.getString("ID"), myRs.getString("Zitat"), myRs.getString("Vorname") + " " + myRs.getString("Nachname"), myRs.getString("Kurs"), myRs.getString("Lehrer"),  myRs.getString("Klasse"), myRs.getString("Nutzername")});	
 					}
 					
 				} catch (SQLException e) {

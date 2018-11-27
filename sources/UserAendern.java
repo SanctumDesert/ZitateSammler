@@ -42,7 +42,6 @@ public class UserAendern {
 		
 		Connect connection = new Connect();
 		
-
 		frmAenderung = new JFrame();
 
 		frmAenderung.setTitle("Account");
@@ -51,7 +50,6 @@ public class UserAendern {
 		frmAenderung.getContentPane().setLayout(null);
 
 		frmAenderung.setVisible(true);
-		
 		
 		JLabel lblNeueMailadresse = new JLabel("neue Mailadresse:");
 		lblNeueMailadresse.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -105,6 +103,10 @@ public class UserAendern {
 				boolean validInput = true;
 				StringBuilder builder = new StringBuilder();
 
+				if(txtLastName.getText().equals("")) {
+					builder.append("Sie müssen einen Nachname angeben.\n");
+					validInput = false;
+				}
 				// Checks if the input mailadress is empty
 				if(txtMail.getText().equals("")) {
 					builder.append("Bitte gib eine Mailadresse ein.\n");
@@ -141,10 +143,6 @@ public class UserAendern {
 				}
 
 				try {
-//					digest = MessageDigest.getInstance("SHA-256");
-//					passwordInput= String.valueOf(txtPwOld.getPassword());
-//					digest.update(passwordInput.getBytes());
-//					System.out.println(passwordInput);
 					
 					//Password has to be encrypted in the database.
 					digest = MessageDigest.getInstance("SHA-256");
@@ -152,14 +150,24 @@ public class UserAendern {
 					digest.update(passwordInput.getBytes());
 					byte[] passwordArray = digest.digest();
 					String passwordStr = new String(DatatypeConverter.printHexBinary(passwordArray).toLowerCase());
-					System.out.println(password_old);
-					System.out.println(passwordStr);
-					if(txtPwOld.getPassword().length > 0 && txtPwCheck.getPassword().length > 0 && txtPwNew.getPassword().length > 0)
+					if(txtPwOld.getPassword().length > 0 || txtPwCheck.getPassword().length > 0 || txtPwNew.getPassword().length > 0) {
 						if(!password_old.equals(passwordStr))
 						{
 							validInput = false;
-							builder.append("Bitte geben Sie Ihr richtiges Passwort ein.");
+							builder.append("Bitte geben Sie Ihr richtiges Passwort ein.\n");
 						}
+						// Checks if the new password is empty. This is not allowed.
+						if(txtPwNew.getPassword().length == 0 && txtPwOld.getPassword().length > 0) {
+							builder.append("Bitte geben Sie ein Passwort ein.\n");
+							validInput = false;
+						}
+						// Checks if the new repeated password is empty. This is not allowed.
+						if(txtPwCheck.getPassword().length == 0 && txtPwOld.getPassword().length > 0) {
+							builder.append("Bitte wiederholen Sie Ihr Passwort.\n");
+							validInput = false;
+						}
+					}
+					
 				} catch (NoSuchAlgorithmException e1) {
 					e1.printStackTrace();
 				}
@@ -169,16 +177,6 @@ public class UserAendern {
 					validInput = false;
 					builder.append("Die angegeben Mailadresse folgt nicht dem validen Mailpattern.\n");
 					builder.append("Beispiel: xxx.yyy@zzz.com\n");
-				}
-				// Checks if the new password is empty. This is not allowed.
-				if(txtPwNew.getPassword().length == 0) {
-					builder.append("Bitte geben Sie ein Passwort ein.\n");
-					validInput = false;
-				}
-				// Checks if the new repeated password is empty. This is not allowed.
-				if(txtPwCheck.getPassword().length == 0) {
-					builder.append("Bitte wiederholen Sie Ihr Passwort.\n");
-					validInput = false;
 				}
 
 				boolean uppercase=false;
@@ -203,13 +201,7 @@ public class UserAendern {
 					builder.append("Die Passwörter stimmen nicht überein.\n");
 					validInput = false;
 				}
-//				try {
-//					digest = MessageDigest.getInstance("SHA-256");
-//					String passwordInput= String.valueOf(txtPwNew.getPassword());
-//					digest.update(passwordInput.getBytes());
-//				} catch (NoSuchAlgorithmException e1) {
-//					e1.printStackTrace();
-//				}
+
 				if(validInput)
 				{
 					try {

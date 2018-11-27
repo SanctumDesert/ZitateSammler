@@ -18,7 +18,7 @@ import java.awt.SystemColor;
 
 public class ZitatAendern {
 
-	private JFrame frame;
+	private JFrame frmZitatndern;
 
 	public ZitatAendern(User user, int zitatID) {
 		initialize(user, zitatID);
@@ -28,77 +28,78 @@ public class ZitatAendern {
 		
 		Connect connection = new Connect();
 		
-		frame = new JFrame();
-		frame.setBounds(100, 100, 599, 380);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
-		frame.setVisible(true);
+		frmZitatndern = new JFrame();
+		frmZitatndern.setTitle("Zitat \u00E4ndern");
+		frmZitatndern.setBounds(100, 100, 599, 380);
+		frmZitatndern.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmZitatndern.getContentPane().setLayout(null);
+		frmZitatndern.setVisible(true);
 		
 		JComboBox<String> cbSubject = new JComboBox<String>();
 		cbSubject.setEditable(true);
 		cbSubject.setBounds(25, 59, 98, 20);
-		frame.getContentPane().add(cbSubject);
+		frmZitatndern.getContentPane().add(cbSubject);
 		
 		JComboBox<String> cbClass = new JComboBox<String>();
 		cbClass.setEditable(true);
 		cbClass.setBounds(133, 59, 98, 20);
-		frame.getContentPane().add(cbClass);
+		frmZitatndern.getContentPane().add(cbClass);
 		
 		JComboBox<String> cbTeacher = new JComboBox<String>();
 		cbTeacher.setEditable(true);
 		cbTeacher.setBounds(241, 59, 98, 20);
-		frame.getContentPane().add(cbTeacher);
+		frmZitatndern.getContentPane().add(cbTeacher);
 		
 		JLabel lblZitatAendern = new JLabel("Zitat aendern");
 		lblZitatAendern.setBounds(25, 21, 98, 14);
-		frame.getContentPane().add(lblZitatAendern);
+		frmZitatndern.getContentPane().add(lblZitatAendern);
 		
 		JLabel label_1 = new JLabel("Kurs");
 		label_1.setBounds(25, 44, 70, 14);
-		frame.getContentPane().add(label_1);
+		frmZitatndern.getContentPane().add(label_1);
 		
 		JLabel label_2 = new JLabel("Klasse");
 		label_2.setBounds(133, 44, 70, 14);
-		frame.getContentPane().add(label_2);
+		frmZitatndern.getContentPane().add(label_2);
 		
 		JLabel label_3 = new JLabel("Lehrer");
 		label_3.setBounds(241, 44, 70, 14);
-		frame.getContentPane().add(label_3);
+		frmZitatndern.getContentPane().add(label_3);
 		
 		JEditorPane ePZitat = new JEditorPane();
 		ePZitat.setBounds(25, 117, 427, 96);
-		frame.getContentPane().add(ePZitat);
+		frmZitatndern.getContentPane().add(ePZitat);
 		
 		JComboBox<String> cbSpeaker = new JComboBox<String>();
 		cbSpeaker.setEditable(true);
 		cbSpeaker.setBounds(354, 59, 98, 20);
-		frame.getContentPane().add(cbSpeaker);
+		frmZitatndern.getContentPane().add(cbSpeaker);
 		
 		JLabel label_4 = new JLabel("Sprecher");
 		label_4.setBounds(354, 44, 70, 14);
-		frame.getContentPane().add(label_4);
+		frmZitatndern.getContentPane().add(label_4);
 		
 		JButton btnSave = new JButton("Speichern");
 		btnSave.setToolTipText("Speichern");btnSave.setBounds(78, 276, 125, 23);
-		frame.getContentPane().add(btnSave);
+		frmZitatndern.getContentPane().add(btnSave);
 		
 		JButton btnCancel = new JButton("Abbrechen");
 		btnCancel.setToolTipText("Abbrechen");
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				frame.dispose();
+				frmZitatndern.dispose();
 				new ZitatAnzeige(user);
 			}
 		});
 		btnCancel.setBounds(327, 276, 125, 23);
-		frame.getContentPane().add(btnCancel);
+		frmZitatndern.getContentPane().add(btnCancel);
 		
 		JTextArea txtErrorLog = new JTextArea();
 		txtErrorLog.setBackground(SystemColor.menu);
 		txtErrorLog.setForeground(new Color(255, 0, 0));
 		txtErrorLog.setEditable(false);
 		txtErrorLog.setBounds(25, 229, 427, 31);
-		frame.getContentPane().add(txtErrorLog);
+		frmZitatndern.getContentPane().add(txtErrorLog);
 		
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -168,7 +169,7 @@ public class ZitatAendern {
 			}
 		});
 		
-		frame.addWindowListener(new WindowAdapter() {
+		frmZitatndern.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowOpened(WindowEvent arg0) {
 				
